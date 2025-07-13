@@ -1,12 +1,11 @@
 
 import './App.css';
+import LoginPage from './components/pages/Login';
 
 function App() {
   return (
     <div className="App">
-      <header className="Bachat-Raah">
-        
-      </header>
+      <LoginPage/>
     </div>
   );
 }
