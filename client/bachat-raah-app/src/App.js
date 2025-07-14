@@ -1,11 +1,15 @@
 
 import './App.css';
-import LoginPage from './components/pages/Login';
+import SignUpPage from './pages/auth/SignupPage';
+import { BrowserRouter } from 'react-router-dom';
+import AppRoutes from './routes/AppRoutes';
 
 function App() {
   return (
     <div className="App">
-      <LoginPage/>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
     </div>
   );
 }
