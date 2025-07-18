@@ -5,6 +5,7 @@ import SignUpPage from '../pages/auth/SignupPage';
 import LoginPage from '../pages/auth/LoginPage';
 import Dashboard from '../pages/Dashboard';
 import NotFound from '../pages/NotFound';
+import Chat from '../pages/Chat';
 import ProtectedRoute from './ProtectedRoute';
 
 export default function AppRoutes(){
@@ -15,6 +16,7 @@ export default function AppRoutes(){
             <Route path="/signup" element={<SignUpPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="*" element={<NotFound />} />
+            <Route path="/chat" element={<Chat />} />
             <Route path="/dashboard" element={
                 <ProtectedRoute>
                     <Dashboard />
