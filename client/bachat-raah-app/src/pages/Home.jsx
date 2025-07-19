@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
-import { X, HandCoins, Search, Bell, Menu, BarChart3, CreditCard, TrendingUp, Users, Calendar, Target, TrendingDown, PieChart, HelpCircle, User } from 'lucide-react';
+import { X, HandCoins, Menu, BarChart3, CreditCard, TrendingUp, Users, Calendar, Target, TrendingDown, PieChart, HelpCircle, User } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
 
 const Home = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const navigationItems = [
-        { icon: BarChart3, label: 'Dashboard', active: false },
-        { icon: CreditCard, label: 'Accounts', active: false },
-        { icon: TrendingUp, label: 'Transactions', active: false },
-        { icon: PieChart, label: 'Cash Flow', active: false },
-        { icon: BarChart3, label: 'Reports', active: false, badge: 'BETA' },
-        { icon: Target, label: 'Budget', active: false },
-        { icon: Calendar, label: 'Recurring', active: false },
-        { icon: Target, label: 'Goals', active: false },
-        { icon: TrendingDown, label: 'Investments', active: false },
-        { icon: HelpCircle, label: 'Advice', active: false },
-        { icon: Users, label: 'Assistant', active: true }
+        { icon: BarChart3, label: 'Dashboard', path: '/dashboard' },
+        { icon: CreditCard, label: 'Accounts', path: '/accounts' },
+        { icon: TrendingUp, label: 'Transactions', path: '/transactions' },
+        { icon: PieChart, label: 'Cash Flow', path: '/cash-flow' },
+        { icon: BarChart3, label: 'Reports', path: '/reports', badge: 'BETA' },
+        { icon: Target, label: 'Budget', path: '/budget' },
+        { icon: Calendar, label: 'Recurring', path: '/recurring' },
+        { icon: Target, label: 'Goals', path: '/goals' },
+        { icon: TrendingDown, label: 'Investments', path: '/investments' },
+        { icon: HelpCircle, label: 'Advice', path: '/advice' },
+        { icon: Users, label: 'Assistant', path: '/chat' }
     ];
 
     return (
@@ -56,9 +57,13 @@ const Home = () => {
                     <ul className="space-y-2">
                         {navigationItems.map((item, index) => (
                             <li key={index}>
-                                <button
-                                    className={`w-full flex items-center gap-3 p-3 rounded text-left transition-colors ${item.active ? 'bg-white text-black' : 'hover:bg-white hover:text-black'
-                                        }`}
+                                <NavLink
+                                    to={item.path}
+                                    key={index}
+                                    className={({ isActive }) =>
+                                        `w-full flex items-center gap-3 p-3 rounded text-left transition-colors ${isActive ? 'bg-white text-black' : 'hover:bg-white hover:text-black'
+                                        }`
+                                    }
                                     onClick={() => setIsMenuOpen(false)}
                                 >
                                     <item.icon size={16} />
@@ -68,7 +73,7 @@ const Home = () => {
                                             {item.badge}
                                         </span>
                                     )}
-                                </button>
+                                </NavLink>
                             </li>
                         ))}
                     </ul>
