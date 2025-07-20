@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { X, HandCoins, Menu, BarChart3, CreditCard, TrendingUp, Users, Calendar, Target, TrendingDown, PieChart, HelpCircle, User } from 'lucide-react';
+import { HandCoins, BarChart3, CreditCard, TrendingUp, Users, Calendar, Target, TrendingDown, PieChart, HelpCircle, User } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
-const Home = () => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+const Home = ({closeMenu}) => {
 
     const navigationItems = [
         { icon: BarChart3, label: 'Dashboard', path: '/dashboard' },
@@ -16,34 +15,16 @@ const Home = () => {
         { icon: Target, label: 'Goals', path: '/goals' },
         { icon: TrendingDown, label: 'Investments', path: '/investments' },
         { icon: HelpCircle, label: 'Advice', path: '/advice' },
-        { icon: Users, label: 'Assistant', path: '/chat' }
+        { icon: Users, label: 'Assistant', path: '/assistant' }
     ];
 
     return (
         <div className="flex h-screen bg-gray-100">
-            {/* Mobile Menu Button */}
-            <button
-                className="lg:hidden fixed top-4 right-4 z-50 p-2 bg-emerald-600 text-white rounded-md shadow-lg"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-
-            {/* Mobile Overlay */}
-            {isMenuOpen && (
-                <div
-                    className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
-                    onClick={() => setIsMenuOpen(false)}
-                />
-            )}
-
             {/* Sidebar */}
             <div className={`
                 w-64 bg-gradient-to-br from-emerald-600 to-emerald-700 text-white flex flex-col
                 lg:relative lg:translate-x-0 lg:z-auto
-                fixed inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out
-                ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}
-            `}>
+                fixed inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out`}>
                 {/* Header */}
                 <div className="p-6 border-b border-emerald-300">
                     <div className="flex items-center gap-2">
@@ -64,7 +45,7 @@ const Home = () => {
                                         `w-full flex items-center gap-3 p-3 rounded text-left transition-colors ${isActive ? 'bg-white text-black' : 'hover:bg-white hover:text-black'
                                         }`
                                     }
-                                    onClick={() => setIsMenuOpen(false)}
+                                    onClick={() => closeMenu && closeMenu()}
                                 >
                                     <item.icon size={16} />
                                     <span className="text-base">{item.label}</span>
@@ -87,12 +68,6 @@ const Home = () => {
                         </div>
                         <span className="text-sm">Jane Smith</span>
                     </div>
-                </div>
-            </div>
-
-            {/* Footer */}
-            <div className="hidden lg:block fixed bottom-0 right-0 p-4 bg-white border-t border-gray-200">
-                <div className="flex items-center gap-2 text-sm text-gray-600">
                 </div>
             </div>
         </div>
