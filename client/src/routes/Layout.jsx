@@ -15,7 +15,7 @@ export default function Layout() {
       <aside className={`fixed top-0 left-0 h-full w-64 z-40 bg-white transform transition-transform duration-300 ease-in-out
                 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} 
                 lg:translate-x-0`}>
-        <Home closeMenu={() => setIsMenuOpen(false)} />
+        <Home closeMenu={() => setIsMenuOpen(false)} setTitle />
       </aside>
 
       {isMenuOpen && (
@@ -29,10 +29,6 @@ export default function Layout() {
         <NavigationHeader
           isMenuOpen={isMenuOpen}
           onMenuClick={() => setIsMenuOpen(!isMenuOpen)}
-          darkMode={darkMode}
-          toggleDarkMode={() => setDarkMode((prev) => !prev)}
-          privateMode={privateMode}
-          togglePrivateMode={() => setPrivateMode((prev) => !prev)}
         />
 
         <main className="flex-1 overflow-y-auto bg-gray-100">

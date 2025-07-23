@@ -1,6 +1,7 @@
 import React from 'react';
 import { Search, Bell, User, Eye, EyeOff, Sun, Moon, Menu, X } from 'lucide-react';
 import { ThemeContext } from '../contexts/ThemeContext';
+import { useNavigationTitleContext } from '../contexts/NavigationTitleContext';
 
 export function NavigationHeader({ onMenuClick, isMenuOpen }) {
     const { 
@@ -9,6 +10,7 @@ export function NavigationHeader({ onMenuClick, isMenuOpen }) {
         privateMode, 
         togglePrivateMode 
     } = React.useContext(ThemeContext);
+    const { title, setTitle} = useNavigationTitleContext();
     return (
         <header
             className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
@@ -20,7 +22,7 @@ export function NavigationHeader({ onMenuClick, isMenuOpen }) {
                     {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
                 </button>
                     <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                        Dashboard
+                        {title}
                     </h2>
                 </div>
 
