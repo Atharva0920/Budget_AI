@@ -22,11 +22,11 @@ mongoose.connect(MONGODB_URI)
 
 
 app.get('/', (req, res) => {
-    res.send('Welcome to Bachat Raah Server');
+    res.send('Welcome to Budget AI Server');
 });
 
 app.get('/home', (req, res) => {
-    res.send('Welcome to Bachat Raah Home Page');
+    res.send('Welcome to Budget AI Home Page');
 });
 
 app.get('/about', (req, res) => {

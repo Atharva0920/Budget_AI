@@ -29,7 +29,7 @@ const Home = ({closeMenu}) => {
                 <div className="p-6 border-b border-emerald-300">
                     <div className="flex items-center gap-2">
                         <HandCoins size={36} />
-                        <span className="font-semibold text-4xl">Bachat AI</span>
+                        <span className="font-semibold text-4xl">Budget AI</span>
                     </div>
                 </div>
 

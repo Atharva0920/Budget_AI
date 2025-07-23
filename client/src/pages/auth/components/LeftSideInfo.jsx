@@ -35,7 +35,7 @@ export default function LeftSideInfo() {
                         <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
                             <span className="text-white font-bold text-2xl">💰</span>
                         </div>
-                        <span className="font-bold text-3xl">Bachat Raah</span>
+                        <span className="font-bold text-3xl">Budget AI</span>
                     </div>
 
                     {/* Hero Content */}
@@ -45,7 +45,7 @@ export default function LeftSideInfo() {
                             <span className="block text-emerald-200">Financial Future</span>
                         </h1>
                         <p className="text-xl text-emerald-100 leading-relaxed">
-                            Join thousands of users who trust Bachat Raah to manage their finances with AI-powered insights and intuitive tools.
+                            Join thousands of users who trust Budget AI to manage their finances with AI-powered insights and intuitive tools.
                         </p>
                     </div>
 

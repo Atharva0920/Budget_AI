@@ -362,7 +362,7 @@ const Dashboard = () => {
                                     <div className="flex items-start gap-3">
                                         <User className="text-blue-500 mt-0.5" size={18} />
                                         <div>
-                                            <p className="text-sm font-medium text-gray-900">Ask Bachat AI</p>
+                                            <p className="text-sm font-medium text-gray-900">Ask Budget AI</p>
                                             <p className="text-sm text-gray-700 mt-1">Need help? Ask me about budgeting, saving, or investment strategies!</p>
                                         </div>
                                     </div>

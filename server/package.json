@@ -10,15 +10,15 @@
   "keywords": [],
   "author": "Atharva Ganmote",
   "license": "ISC",
-  "description": "backend server for bachat raah",
+  "description": "backend server for Budget AI",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Atharva0920/Bachat_Raah.git"
+    "url": "git+https://github.com/Atharva0920/Budget-AI.git"
   },
   "bugs": {
-    "url": "https://github.com/Atharva0920/Bachat_Raah/issues"
+    "url": "https://github.com/Atharva0920/Budget-AI/issues"
   },
-  "homepage": "https://github.com/Atharva0920/Bachat_Raah#readme",
+  "homepage": "https://github.com/Atharva0920/Budget-AI#readme",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",

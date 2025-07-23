@@ -8,7 +8,7 @@ const NotFound = () => {
                 <div className="max-w-6xl mx-auto flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <HandCoins size={32} className="text-emerald-600" />
-                        <span className="font-semibold text-2xl text-gray-800">Bachat AI</span>
+                        <span className="font-semibold text-2xl text-gray-800">Budget AI</span>
                     </div>
                     <button className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
                         <Home size={16} />
@@ -61,7 +61,7 @@ const NotFound = () => {
             <div className="bg-white border-t border-gray-200 p-4">
                 <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-4 text-sm text-gray-600">
-                        <span>© 2025 Bachat AI</span>
+                        <span>© 2025 Budget AI</span>
                         <span>•</span>
                         <a href="#" className="hover:text-emerald-600 transition-colors">Privacy Policy</a>
                         <span>•</span>
