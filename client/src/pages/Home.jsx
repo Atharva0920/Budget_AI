@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { HandCoins, BarChart3, CreditCard, TrendingUp, Users, Calendar, Target, TrendingDown, PieChart, HelpCircle, User } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
+import { useNavigationTitleContext } from '../contexts/NavigationTitleContext';
 
-const Home = ({closeMenu}) => {
+const Home = (closeMenu) => {
+    const {title, setTitle} = useNavigationTitleContext();
 
     const navigationItems = [
         { icon: BarChart3, label: 'Dashboard', path: '/dashboard' },
@@ -45,7 +47,12 @@ const Home = ({closeMenu}) => {
                                         `w-full flex items-center gap-3 p-3 rounded text-left transition-colors ${isActive ? 'bg-white text-black' : 'hover:bg-white hover:text-black'
                                         }`
                                     }
-                                    onClick={() => closeMenu && closeMenu()}
+                                    onClick={() =>{
+                                        console.log(item.label)
+                                        setTitle(item.label);
+                                        // closeMenu?.();
+                                        }
+                                    }
                                 >
                                     <item.icon size={16} />
                                     <span className="text-base">{item.label}</span>

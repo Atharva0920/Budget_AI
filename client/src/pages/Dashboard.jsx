@@ -11,8 +11,8 @@ const Dashboard = () => {
         darkMode, 
         privateMode 
     } = React.useContext(ThemeContext);
-    // console.log('Dashboard rendered with darkMode:', darkMode, 'privateMode:', privateMode);
-    // Sample data
+    console.log('Dashboard rendered with darkMode:', darkMode, 'privateMode:', privateMode);
+
     const financialSummary = {
         totalBalance: 2850000,
         monthlyIncome: 125000,
