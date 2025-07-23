@@ -10,7 +10,7 @@ export default function Chat() {
         {
             id: 1,
             type: 'assistant',
-            content: "👋 Hi there! I'm your Bachat Assistant, I'm here to help you understand your finances, provide support, and suggest strategies to improve your financial health. ✨",
+            content: "👋 Hi there! I'm your Budget AI Assistant, I'm here to help you understand your finances, provide support, and suggest strategies to improve your financial health. ✨",
             timestamp: 'Today at 17:32'
         },
         {

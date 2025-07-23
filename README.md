@@ -25,8 +25,8 @@ A simple and intuitive web application to track your daily expenses, income, and
 
 ```bash
 # Clone the repository
-git clone https://github.com/Atharva0920/Bachat_Raah.git
-cd bachat-raah
+git clone https://github.com/Atharva0920/Budget-AI.git
+cd budget-ai
 
 # Install frontend & backend dependencies
 cd client && npm install
