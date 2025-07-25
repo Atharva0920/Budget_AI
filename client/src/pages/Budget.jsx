@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { getColorClasses } from '../utils/colorUtils';
-
+import { formatCurrency } from '../utils/formatCurrency';
 const BudgetPage = () => {
     const [editingBudget, setEditingBudget] = useState(null);
     const [showAddForm, setShowAddForm] = useState(false);
@@ -110,14 +110,6 @@ const BudgetPage = () => {
         }
     ]);
 
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        }).format(amount);
-    };
 
     const getUsagePercentage = (spent, limit) => Math.min((spent / limit) * 100, 100);
 
@@ -127,61 +119,6 @@ const BudgetPage = () => {
         if (percentage >= 80) return 'yellow';
         return 'green';
     };
-
-    // const getColorClasses = (color, context = 'primary') => {
-    //     const colorMap = {
-    //         emerald: {
-    //             primary: 'text-emerald-600',
-    //             bg: 'bg-emerald-50',
-    //             progress: 'bg-emerald-600',
-    //             border: 'border-emerald-200'
-    //         },
-    //         blue: {
-    //             primary: 'text-blue-600',
-    //             bg: 'bg-blue-50',
-    //             progress: 'bg-blue-600',
-    //             border: 'border-blue-200'
-    //         },
-    //         purple: {
-    //             primary: 'text-purple-600',
-    //             bg: 'bg-purple-50',
-    //             progress: 'bg-purple-600',
-    //             border: 'border-purple-200'
-    //         },
-    //         orange: {
-    //             primary: 'text-orange-600',
-    //             bg: 'bg-orange-50',
-    //             progress: 'bg-orange-600',
-    //             border: 'border-orange-200'
-    //         },
-    //         cyan: {
-    //             primary: 'text-cyan-600',
-    //             bg: 'bg-cyan-50',
-    //             progress: 'bg-cyan-600',
-    //             border: 'border-cyan-200'
-    //         },
-    //         red: {
-    //             primary: 'text-red-600',
-    //             bg: 'bg-red-50',
-    //             progress: 'bg-red-600',
-    //             border: 'border-red-200'
-    //         },
-    //         yellow: {
-    //             primary: 'text-yellow-600',
-    //             bg: 'bg-yellow-50',
-    //             progress: 'bg-yellow-600',
-    //             border: 'border-yellow-200'
-    //         },
-    //         indigo: {
-    //             primary: 'text-indigo-600',
-    //             bg: 'bg-indigo-50',
-    //             progress: 'bg-indigo-600',
-    //             border: 'border-indigo-200'
-    //         }
-    //     };
-    //     return colorMap[color]?.[context] || colorMap.blue[context];
-    // };
-
     const handleSaveBudget = async (budgetId, updatedData) => {
         setBudgets(prev => prev.map(b =>
             b.id === budgetId ? { ...b, ...updatedData } : b
