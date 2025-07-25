@@ -5,6 +5,7 @@ import {
     Car, ShoppingCart, Coffee, User, Search,
 } from 'lucide-react';
 import { ThemeContext } from '../contexts/ThemeContext';
+import { formatCurrency } from '../utils/formatCurrency';
 
 const Dashboard = () => {
     const { 
@@ -56,14 +57,6 @@ const Dashboard = () => {
         { name: 'Vacation', target: 150000, current: 87000, percentage: 58 },
         { name: 'New Laptop', target: 120000, current: 96000, percentage: 80 }
     ];
-
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-IN', {
-            style: 'currency',
-            currency: 'INR',
-            minimumFractionDigits: 0
-        }).format(amount);
-    };
 
 
     return (
