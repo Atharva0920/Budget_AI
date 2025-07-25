@@ -3,7 +3,7 @@ import { HandCoins, BarChart3, CreditCard, TrendingUp, X, Menu, Users, Calendar,
 import { NavLink } from 'react-router-dom';
 import { useNavigationTitleContext } from '../contexts/NavigationTitleContext';
 
-const Home = ({onMenuClick, isMenuOpen}) => {
+const Home = ({closeMenu}) => {
     const { title, setTitle } = useNavigationTitleContext();
 
     const navigationItems = [
@@ -28,16 +28,7 @@ const Home = ({onMenuClick, isMenuOpen}) => {
                 lg:relative lg:translate-x-0 lg:z-auto
                 fixed inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out`}>
                 {/* Header */}
-                <div className="flex p-6 border-b border-emerald-300">
-                    <div className="flex items-center gap-2">
-                        <HandCoins size={36} />
-                        <span className="font-semibold text-4xl">Budget AI</span>
-                    </div>
-                    <div className="flex items-center gap-2"><button className="lg:hidden p-2 rounded-lg" onClick={onMenuClick}>
-                        {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
-                    </button>
-                    </div>
-                </div>
+                
 
                 {/* Navigation */}
                 <nav className="flex-1 p-4 overflow-y-auto">
@@ -52,11 +43,7 @@ const Home = ({onMenuClick, isMenuOpen}) => {
                                         }`
                                     }
                                     onClick={() => {
-                                        console.log(item.label)
-                                        setTitle(item.label);
-                                        if(isMenuOpen){
-                                            onMenuClick();
-                                        }
+                                        closeMenu && closeMenu();
                                     }
                                     }
                                 >

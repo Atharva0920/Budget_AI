@@ -1,29 +1,32 @@
 import React from 'react';
-import { Search, Bell, User, Eye, EyeOff, Sun, Moon, Menu, X } from 'lucide-react';
+import { Search, Bell, User, Eye, EyeOff, Sun, Moon, Menu, X, HandCoins } from 'lucide-react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { useNavigationTitleContext } from '../contexts/NavigationTitleContext';
 
 export function NavigationHeader({ onMenuClick, isMenuOpen }) {
-    const { 
-        darkMode, 
-        toggleDarkMode, 
-        privateMode, 
-        togglePrivateMode 
+    const {
+        darkMode,
+        toggleDarkMode,
+        privateMode,
+        togglePrivateMode
     } = React.useContext(ThemeContext);
-    const { title, setTitle} = useNavigationTitleContext();
     return (
         <header
             className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
                 } border-b px-4 sm:px-6 py-4 w-full`}
         >
             <div className="flex items-center justify-between flex-wrap gap-4">
-
-                <div className="flex items-center gap-4"><button className={`lg:hidden p-2 rounded-lg ${darkMode ? 'text-white' : 'text-gray-900'}`} onClick={onMenuClick}>
-                    {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
-                </button>
-                    <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                        {title}
-                    </h2>
+                <div className={`flex gap-4  ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                    <div className="flex items-center gap-2"><button className="lg:hidden p-2 rounded-lg" onClick={onMenuClick}>
+                        {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                    </button>
+                    </div>
+                    <div className='flex flex-wrap gap-6'>
+                        <div className="flex items-center gap-2">
+                            <HandCoins size={36} />
+                            <span className="font-semibold text-4xl">Budget AI</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="flex items-center flex-wrap gap-3 sm:gap-4">
@@ -59,7 +62,7 @@ export function NavigationHeader({ onMenuClick, isMenuOpen }) {
                         <button
                             onClick={toggleDarkMode}
                             className={`p-2 rounded-lg ${darkMode ? 'hover:bg-gray-700 text-white' : 'hover:bg-gray-100'}`}
-                            
+
                         >
                             {darkMode ? <Sun size={20} /> : <Moon size={20} />}
                         </button>
@@ -71,7 +74,7 @@ export function NavigationHeader({ onMenuClick, isMenuOpen }) {
                     <div className="relative group">
                         <button
                             className={`p-2 rounded-lg ${darkMode ? 'hover:bg-gray-700 text-white' : 'hover:bg-gray-100'}`}
-                           
+
                         >
                             <Bell size={20} />
                         </button>
@@ -83,7 +86,7 @@ export function NavigationHeader({ onMenuClick, isMenuOpen }) {
                     <div className="relative group">
                         <button
                             className={`p-2 rounded-lg ${darkMode ? 'hover:bg-gray-700 text-white' : 'hover:bg-gray-100'}`}
-                            
+
                         >
                             <User size={20} />
                         </button>
