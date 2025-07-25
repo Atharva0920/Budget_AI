@@ -154,6 +154,10 @@ const Investments = () => {
     return (
         <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
             <main className="p-6 space-y-6">
+                <div>
+                    <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Investments</h1>
+                    <p className={`mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Track and manage your spending limits</p>
+                </div>
                 {/* Investment Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-6 rounded-xl srounded-xl shadow-sm border`}>
@@ -190,7 +194,7 @@ const Investments = () => {
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-3">
                                 <div className={`${darkMode ? 'bg-yellow-900' : 'bg-yellow-100'} p-2 rounded-lg`}>
-                                    <DollarSign className={`${darkMode ? 'text-yellow-400' : 'text-yellow-600'} w-5 h-5 `}  />
+                                    <DollarSign className={`${darkMode ? 'text-yellow-400' : 'text-yellow-600'} w-5 h-5 `} />
                                 </div>
                                 <span className={`text-m font-medium ${darkMode ? 'text-gray-400' : 'text-gray-900'}`}>Total Returns</span>
                             </div>
@@ -205,7 +209,7 @@ const Investments = () => {
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-3">
                                 <div className={`${darkMode ? 'bg-purple-900' : 'bg-purple-100'} p-2 rounded-lg`}>
-                                    <BarChart3 className={`${darkMode ? 'text-purple-400' : 'text-purple-600'} w-5 h-5 `}  />
+                                    <BarChart3 className={`${darkMode ? 'text-purple-400' : 'text-purple-600'} w-5 h-5 `} />
                                 </div>
                                 <span className={`text-m font-medium ${darkMode ? 'text-gray-400' : 'text-gray-900'}`}>Portfolio Growth</span>
                             </div>
@@ -376,7 +380,7 @@ const Investments = () => {
                                                     </div>
                                                     <div>
                                                         <div className={`${darkMode ? 'text-white' : 'text-gray-900'} text-sm font-medium `}>{investment.name}</div>
-                                                        <div className={`${darkMode ? 'text-gray-400': 'text-gray-500' } text-sm`}>{investment.type}</div>
+                                                        <div className={`${darkMode ? 'text-gray-400' : 'text-gray-500'} text-sm`}>{investment.type}</div>
                                                     </div>
                                                 </div>
                                             </td>
@@ -409,7 +413,7 @@ const Investments = () => {
                         {/* Upcoming SIPs */}
                         <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} p-6 rounded-xl shadow-sm border `}>
                             <div className="flex items-center gap-2 mb-4">
-                                <Clock className={`${darkMode ? 'text-blue-400' : 'text-blue-600'} w-5 h-5`}/>
+                                <Clock className={`${darkMode ? 'text-blue-400' : 'text-blue-600'} w-5 h-5`} />
                                 <h3 className={`${darkMode ? 'text-white' : 'text-gray-900'} font-semibold `}>Upcoming SIPs</h3>
                             </div>
 
