@@ -18,7 +18,7 @@ export function NavigationHeader({ onMenuClick, isMenuOpen }) {
         >
             <div className="flex items-center justify-between flex-wrap gap-4">
 
-                <div className="flex items-center gap-4"><button className="lg:hidden p-2 rounded-lg" onClick={onMenuClick}>
+                <div className="flex items-center gap-4"><button className={`lg:hidden p-2 rounded-lg ${darkMode ? 'text-white' : 'text-gray-900'}`} onClick={onMenuClick}>
                     {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
                 </button>
                     <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>

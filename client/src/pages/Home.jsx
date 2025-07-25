@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { HandCoins, BarChart3, CreditCard, TrendingUp, Users, Calendar, Target, TrendingDown, PieChart, HelpCircle, User } from 'lucide-react';
+import { HandCoins, BarChart3, CreditCard, TrendingUp, X, Menu, Users, Calendar, Target, TrendingDown, PieChart, HelpCircle, User } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useNavigationTitleContext } from '../contexts/NavigationTitleContext';
 
-const Home = (closeMenu) => {
-    const {title, setTitle} = useNavigationTitleContext();
+const Home = ({onMenuClick, isMenuOpen}) => {
+    const { title, setTitle } = useNavigationTitleContext();
 
     const navigationItems = [
         { icon: BarChart3, label: 'Dashboard', path: '/dashboard' },
@@ -28,10 +28,14 @@ const Home = (closeMenu) => {
                 lg:relative lg:translate-x-0 lg:z-auto
                 fixed inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out`}>
                 {/* Header */}
-                <div className="p-6 border-b border-emerald-300">
+                <div className="flex p-6 border-b border-emerald-300">
                     <div className="flex items-center gap-2">
                         <HandCoins size={36} />
                         <span className="font-semibold text-4xl">Budget AI</span>
+                    </div>
+                    <div className="flex items-center gap-2"><button className="lg:hidden p-2 rounded-lg" onClick={onMenuClick}>
+                        {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                    </button>
                     </div>
                 </div>
 
@@ -47,11 +51,13 @@ const Home = (closeMenu) => {
                                         `w-full flex items-center gap-3 p-3 rounded text-left transition-colors ${isActive ? 'bg-white text-black' : 'hover:bg-white hover:text-black'
                                         }`
                                     }
-                                    onClick={() =>{
+                                    onClick={() => {
                                         console.log(item.label)
                                         setTitle(item.label);
-                                        // closeMenu?.();
+                                        if(isMenuOpen){
+                                            onMenuClick();
                                         }
+                                    }
                                     }
                                 >
                                     <item.icon size={16} />
