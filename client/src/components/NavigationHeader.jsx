@@ -1,7 +1,6 @@
 import React from 'react';
 import { Search, Bell, User, Eye, EyeOff, Sun, Moon, Menu, X, HandCoins } from 'lucide-react';
 import { ThemeContext } from '../contexts/ThemeContext';
-import { useNavigationTitleContext } from '../contexts/NavigationTitleContext';
 
 export function NavigationHeader({ onMenuClick, isMenuOpen }) {
     const {
@@ -12,8 +11,8 @@ export function NavigationHeader({ onMenuClick, isMenuOpen }) {
     } = React.useContext(ThemeContext);
     return (
         <header
-            className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
-                } border-b px-4 sm:px-6 py-4 w-full`}
+            className={`${darkMode ? 'bg-gray-800 border-gray-700 shadow drop-shadow-sm' : 'bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 border-gray-200 shadow drop-shadow-sm'
+                } border-b px-4 sm:px-6 py-4 w-full shadow-sm`}
         >
             <div className="flex items-center justify-between flex-wrap gap-4">
                 <div className={`flex gap-4  ${darkMode ? 'text-white' : 'text-gray-900'}`}>
