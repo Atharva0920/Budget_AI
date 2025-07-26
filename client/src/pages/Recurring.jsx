@@ -1,11 +1,18 @@
-export default function Recurring() {
+import { useContext } from "react";
+import { ThemeContext } from "../contexts/ThemeContext";
+const Recurring = () => {
+    const { darkMode, privateMode } = useContext = { ThemeContext }
     return (
-        <div>
-            <h1>Investments</h1>
-            <p>Welcome to your investments page! Here you can manage your investment portfolio, track performance, and explore new opportunities.</p>
-            <p>Use the navigation menu to access different sections of your investment management tools.</p>
-            <p>Need help? Visit our <a href="/about">About Us</a> page to learn more about Budget AI and how we can assist you.</p>
-            <p>Back to <a href="/">home page</a>.</p>
+        <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
+            <div className={`transition-all duration-300`}>
+                <main className="p-6 space-y-6">
+                    <div>
+                        <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Bills & Subscriptions</h1>
+                        <p className={`mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Track and manage your bills & subscriptions</p>
+                    </div>
+                </main>
+            </div>
         </div>
     );
-}   
+}
+export default Recurring;

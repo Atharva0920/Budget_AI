@@ -21,19 +21,27 @@ import {
     Zap,
     Book
 } from 'lucide-react';
-import { ThemeContext } from '../contexts/ThemeContext';
-import { getColorClasses } from '../utils/colorUtils';
-import { formatCurrency } from '../utils/formatCurrency';
+
+// Import reusable components
+import { Card } from '../components/ui/Card';
+import { StatCard } from '../components/ui/StatCard';
+import { PageHeader } from '../components/ui/PageHeader';
+import { Button } from '../components/ui/Button';
+import { ProgressBar } from '../components/ui/ProgressBar';
+import { Modal } from '../components/ui/Modal';
+import { Input } from '../components/ui/Input';
+import { Select } from '../components/ui/Select';
+import { useTheme } from '../hooks/useTheme';
+import { formatCurrency } from '../utils/formatters';
+
 const BudgetPage = () => {
     const [editingBudget, setEditingBudget] = useState(null);
     const [showAddForm, setShowAddForm] = useState(false);
-
-
     const initialNewBudget = { name: '', limit: '', spent: 0, category: 'other', color: 'blue' };
-    const [newBudget, setNewBudget] = useState({ initialNewBudget });
+    const [newBudget, setNewBudget] = useState(initialNewBudget);
 
-    const { darkMode, privateMode } = React.useContext(ThemeContext);
-    console.log('Dark Mode:', darkMode);
+    const { darkMode, privateMode } = useTheme();
+
     // Sample budget data
     const [budgets, setBudgets] = useState([
         {
@@ -110,6 +118,17 @@ const BudgetPage = () => {
         }
     ]);
 
+    const categoryOptions = [
+        { value: 'food', label: 'Food & Dining' },
+        { value: 'transport', label: 'Transportation' },
+        { value: 'housing', label: 'Housing' },
+        { value: 'entertainment', label: 'Entertainment' },
+        { value: 'travel', label: 'Travel' },
+        { value: 'health', label: 'Healthcare' },
+        { value: 'utilities', label: 'Utilities' },
+        { value: 'education', label: 'Education' },
+        { value: 'other', label: 'Other' }
+    ];
 
     const getUsagePercentage = (spent, limit) => Math.min((spent / limit) * 100, 100);
 
@@ -119,6 +138,7 @@ const BudgetPage = () => {
         if (percentage >= 80) return 'yellow';
         return 'green';
     };
+
     const handleSaveBudget = async (budgetId, updatedData) => {
         setBudgets(prev => prev.map(b =>
             b.id === budgetId ? { ...b, ...updatedData } : b
@@ -128,7 +148,18 @@ const BudgetPage = () => {
 
     const handleAddBudget = async () => {
         if (newBudget.name && newBudget.limit) {
-            const icons = { food: ShoppingCart, transport: Car, housing: Home, entertainment: Coffee, travel: Plane, health: Heart, utilities: Zap, education: Book, other: DollarSign };
+            const icons = { 
+                food: ShoppingCart, 
+                transport: Car, 
+                housing: Home, 
+                entertainment: Coffee, 
+                travel: Plane, 
+                health: Heart, 
+                utilities: Zap, 
+                education: Book, 
+                other: DollarSign 
+            };
+            
             setBudgets(prev => [...prev, {
                 id: Date.now(),
                 name: newBudget.name,
@@ -138,7 +169,8 @@ const BudgetPage = () => {
                 color: newBudget.color,
                 icon: icons[newBudget.category] || DollarSign
             }]);
-            setNewBudget({ name: '', limit: '', spent: 0, category: 'other', color: 'blue' });
+            
+            setNewBudget(initialNewBudget);
             setShowAddForm(false);
         }
     };
@@ -151,71 +183,61 @@ const BudgetPage = () => {
     const totalSpent = budgets.reduce((sum, b) => sum + b.spent, 0);
     const overBudgetCount = budgets.filter(b => b.spent > b.limit).length;
 
+    const headerActions = (
+        <Button 
+            onClick={() => setShowAddForm(true)}
+            icon={Plus}
+        >
+            Add Budget
+        </Button>
+    );
+
+    const summaryCards = [
+        {
+            title: 'Total Budget',
+            value: formatCurrency(totalBudget, privateMode),
+            icon: Wallet,
+            badge: `${((totalSpent / totalBudget) * 100).toFixed(1)}%`,
+            changeType: totalSpent <= totalBudget ? 'positive' : 'negative',
+            subtitle: `Spent: ${formatCurrency(totalSpent, privateMode)}`
+        },
+        {
+            title: 'Active Budgets',
+            value: budgets.length.toString(),
+            icon: Target,
+            badge: budgets.length.toString(),
+            changeType: 'neutral',
+            subtitle: 'Categories'
+        },
+        {
+            title: 'Budget Status',
+            value: overBudgetCount > 0 ? overBudgetCount.toString() : '✓',
+            icon: overBudgetCount > 0 ? AlertTriangle : CheckCircle,
+            badge: overBudgetCount > 0 ? 'Over' : 'On Track',
+            changeType: overBudgetCount > 0 ? 'negative' : 'positive',
+            subtitle: overBudgetCount > 0 ? 'Over budget' : 'All on track'
+        }
+    ];
+
     return (
         <div className={`min-h-screen transition-all duration-300 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
             <div className="max-w-7xl mx-auto px-4 py-8">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-8">
-                    <div>
-                        <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Budget Management</h1>
-                        <p className={`mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Track and manage your spending limits</p>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <button
-                            onClick={() => setShowAddForm(true)}
-                            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 hover:scale-105"
-                        >
-                            <Plus size={18} />
-                            Add Budget
-                        </button>
-                    </div>
-                </div>
+                <PageHeader
+                    title="Budget Management"
+                    subtitle="Track and manage your spending limits"
+                    actions={headerActions}
+                    darkMode={darkMode}
+                />
 
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-all duration-200 hover:shadow-md`}>
-                        <div className="flex items-center justify-between mb-2">
-                            <Wallet className="text-blue-600" size={24} />
-                            <span className={`text-sm px-2 py-1 rounded-full ${totalSpent <= totalBudget ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50'
-                                }`}>
-                                {((totalSpent / totalBudget) * 100).toFixed(1)}%
-                            </span>
-                        </div>
-                        <h3 className={`text-sm font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Total Budget</h3>
-                        <p className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{formatCurrency(totalBudget)}</p>
-                        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Spent: {formatCurrency(totalSpent)}</p>
-                    </div>
-
-                    <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-all duration-200 hover:shadow-md`}>
-                        <div className="flex items-center justify-between mb-2">
-                            <Target className="text-purple-600" size={24} />
-                            <span className="text-sm text-purple-600 bg-purple-50 px-2 py-1 rounded-full">{budgets.length}</span>
-                        </div>
-                        <h3 className={`text-sm font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Active Budgets</h3>
-                        <p className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{budgets.length}</p>
-                        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Categories</p>
-                    </div>
-
-                    <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-all duration-200 hover:shadow-md`}>
-                        <div className="flex items-center justify-between mb-2">
-                            {overBudgetCount > 0 ? (
-                                <AlertTriangle className="text-red-600" size={24} />
-                            ) : (
-                                <CheckCircle className="text-green-600" size={24} />
-                            )}
-                            <span className={`text-sm px-2 py-1 rounded-full ${overBudgetCount > 0 ? 'text-red-600 bg-red-50' : 'text-green-600 bg-green-50'
-                                }`}>
-                                {overBudgetCount > 0 ? 'Over' : 'On Track'}
-                            </span>
-                        </div>
-                        <h3 className={`text-sm font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Budget Status</h3>
-                        <p className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                            {overBudgetCount > 0 ? overBudgetCount : '✓'}
-                        </p>
-                        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                            {overBudgetCount > 0 ? 'Over budget' : 'All on track'}
-                        </p>
-                    </div>
+                    {summaryCards.map((card, index) => (
+                        <StatCard
+                            key={index}
+                            {...card}
+                            darkMode={darkMode}
+                        />
+                    ))}
                 </div>
 
                 {/* Budget Cards Grid */}
@@ -227,55 +249,61 @@ const BudgetPage = () => {
                         const remaining = budget.limit - budget.spent;
 
                         return (
-                            <div
+                            <Card
                                 key={budget.id}
-                                className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'
-                                    } transition-all duration-200 hover:shadow-md hover:scale-105 group`}
+                                darkMode={darkMode}
+                                hover
+                                className="p-6 group"
                             >
                                 {/* Header */}
                                 <div className="flex items-center justify-between mb-4">
                                     <div className="flex items-center gap-3">
-                                        <div className={`p-2 rounded-lg ${getColorClasses(budget.color, 'bg')}`}>
-                                            <IconComponent className={getColorClasses(budget.color, 'primary')} size={20} />
+                                        <div className={`p-2 rounded-lg bg-${budget.color}-100`}>
+                                            <IconComponent className={`text-${budget.color}-600`} size={20} />
                                         </div>
-                                        <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{budget.name}</h3>
+                                        <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                            {budget.name}
+                                        </h3>
                                     </div>
                                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200">
-                                        <button
-
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            icon={Edit3}
                                             onClick={() => setEditingBudget(budget.id)}
-                                            className={`p-1 rounded hover:bg-gray-100 ${darkMode ? 'hover:bg-gray-700 text-gray-400' : 'text-gray-500'}`}
-                                        >
-                                            <Edit3 size={16} />
-                                        </button>
-                                        <button
+                                            darkMode={darkMode}
+                                        />
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            icon={Trash2}
                                             onClick={() => handleDeleteBudget(budget.id)}
-                                            className="p-1 rounded hover:bg-red-50 text-red-500 hover:text-red-600"
-
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
+                                            className="text-red-500 hover:text-red-600"
+                                        />
                                     </div>
                                 </div>
 
                                 {/* Budget Amount */}
                                 <div className="mb-4">
                                     <div className="flex items-center justify-between mb-1">
-                                        <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Spent</span>
-                                        <span className={`text-sm font-medium ${isOverBudget ? 'text-red-600' : darkMode ? 'text-gray-300' : 'text-gray-700'
-                                            }`}>
-                                            {formatCurrency(budget.spent)} / {formatCurrency(budget.limit)}
+                                        <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                            Spent
+                                        </span>
+                                        <span className={`text-sm font-medium ${
+                                            isOverBudget ? 'text-red-600' : darkMode ? 'text-gray-300' : 'text-gray-700'
+                                        }`}>
+                                            {formatCurrency(budget.spent, privateMode)} / {formatCurrency(budget.limit, privateMode)}
                                         </span>
                                     </div>
 
                                     {/* Progress Bar */}
-                                    <div className={`w-full rounded-full h-2 ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
-                                        <div
-                                            className={`h-2 rounded-full transition-all duration-300 ${isOverBudget ? 'bg-red-600' : getColorClasses(budget.color, 'progress')
-                                                }`}
-                                            style={{ width: `${Math.min(usagePercentage, 100)}%` }}
-                                        ></div>
-                                    </div>
+                                    <ProgressBar
+                                        value={budget.spent}
+                                        max={budget.limit}
+                                        color={isOverBudget ? 'red' : budget.color}
+                                        darkMode={darkMode}
+                                        showPercentage={false}
+                                    />
 
                                     {/* Remaining/Over Budget */}
                                     <div className="mt-2 flex items-center justify-between">
@@ -287,14 +315,14 @@ const BudgetPage = () => {
                                                 <>
                                                     <TrendingDown className="text-red-500" size={12} />
                                                     <span className="text-xs text-red-600 font-medium">
-                                                        {formatCurrency(Math.abs(remaining))} over
+                                                        {formatCurrency(Math.abs(remaining), privateMode)} over
                                                     </span>
                                                 </>
                                             ) : (
                                                 <>
                                                     <TrendingUp className="text-green-500" size={12} />
                                                     <span className="text-xs text-green-600 font-medium">
-                                                        {formatCurrency(remaining)} left
+                                                        {formatCurrency(remaining, privateMode)} left
                                                     </span>
                                                 </>
                                             )}
@@ -306,106 +334,89 @@ const BudgetPage = () => {
                                 {editingBudget === budget.id && (
                                     <div className="border-t border-gray-200 pt-4">
                                         <div className="space-y-3">
-                                            <input
+                                            <Input
                                                 type="text"
                                                 defaultValue={budget.name}
-                                                id="budget-name"
-                                                className={`w-full p-2 rounded-lg border text-sm ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300'
-                                                    }`}
+                                                darkMode={darkMode}
                                                 onBlur={(e) => handleSaveBudget(budget.id, { name: e.target.value })}
                                             />
-                                            <input
+                                            <Input
                                                 type="number"
-                                                id="budget-limit"
                                                 defaultValue={budget.limit}
-                                                className={`w-full p-2 rounded-lg border text-sm ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300'
-                                                    }`}
+                                                darkMode={darkMode}
                                                 onBlur={(e) => handleSaveBudget(budget.id, { limit: parseFloat(e.target.value) || 0 })}
                                             />
                                             <div className="flex gap-2">
-                                                <button
+                                                <Button
                                                     onClick={() => setEditingBudget(null)}
-                                                    className="flex-1 p-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
+                                                    icon={Save}
+                                                    size="sm"
+                                                    className="flex-1"
                                                 >
-                                                    <Save size={14} className="inline mr-1" />
                                                     Save
-                                                </button>
-                                                <button
+                                                </Button>
+                                                <Button
                                                     onClick={() => setEditingBudget(null)}
-                                                    className={`p-2 rounded-lg text-sm ${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-200 text-gray-700'
-                                                        }`}
-                                                >
-                                                    <X size={14} />
-                                                </button>
+                                                    variant="secondary"
+                                                    size="sm"
+                                                    icon={X}
+                                                    darkMode={darkMode}
+                                                />
                                             </div>
                                         </div>
                                     </div>
                                 )}
-                            </div>
+                            </Card>
                         );
                     })}
                 </div>
 
                 {/* Add Budget Modal */}
-                {showAddForm && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl w-full max-w-md mx-4`}>
-                            <h2 className={`text-xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Add New Budget</h2>
-                            <div className="space-y-4">
-                                <input
-                                    type="text"
-                                    id="name"
-                                    placeholder="Budget Name"
-                                    value={newBudget.name}
-                                    onChange={(e) => setNewBudget(prev => ({ ...prev, name: e.target.value }))}
-                                    className={`w-full p-3 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300'
-                                        }`}
-                                />
-                                <input
-                                    type="number"
-                                    placeholder="Budget Limit"
-                                    id="limit"
-                                    value={newBudget.limit}
-                                    onChange={(e) => setNewBudget(prev => ({ ...prev, limit: e.target.value }))}
-                                    className={`w-full p-3 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300'
-                                        }`}
-                                />
-                                <select
-                                    id="category"
-                                    value={newBudget.category}
-                                    onChange={(e) => setNewBudget(prev => ({ ...prev, category: e.target.value }))}
-                                    className={`w-full p-3 rounded-lg border ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300'
-                                        }`}
-                                >
-                                    <option value="food">Food & Dining</option>
-                                    <option value="transport">Transportation</option>
-                                    <option value="housing">Housing</option>
-                                    <option value="entertainment">Entertainment</option>
-                                    <option value="travel">Travel</option>
-                                    <option value="health">Healthcare</option>
-                                    <option value="utilities">Utilities</option>
-                                    <option value="education">Education</option>
-                                    <option value="other">Other</option>
-                                </select>
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={handleAddBudget}
-                                        className="flex-1 p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                                    >
-                                        Add Budget
-                                    </button>
-                                    <button
-                                        onClick={() => setShowAddForm(false)}
-                                        className={`p-3 rounded-lg ${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-200 text-gray-700'
-                                            }`}
-                                    >
-                                        Cancel
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                <Modal
+                    isOpen={showAddForm}
+                    onClose={() => setShowAddForm(false)}
+                    title="Add New Budget"
+                    darkMode={darkMode}
+                    actions={[
+                        <Button
+                            key="cancel"
+                            variant="secondary"
+                            onClick={() => setShowAddForm(false)}
+                            darkMode={darkMode}
+                        >
+                            Cancel
+                        </Button>,
+                        <Button
+                            key="add"
+                            onClick={handleAddBudget}
+                        >
+                            Add Budget
+                        </Button>
+                    ]}
+                >
+                    <div className="space-y-4">
+                        <Input
+                            type="text"
+                            placeholder="Budget Name"
+                            value={newBudget.name}
+                            onChange={(e) => setNewBudget(prev => ({ ...prev, name: e.target.value }))}
+                            darkMode={darkMode}
+                        />
+                        <Input
+                            type="number"
+                            placeholder="Budget Limit"
+                            value={newBudget.limit}
+                            onChange={(e) => setNewBudget(prev => ({ ...prev, limit: e.target.value }))}
+                            darkMode={darkMode}
+                        />
+                        <Select
+                            value={newBudget.category}
+                            onChange={(e) => setNewBudget(prev => ({ ...prev, category: e.target.value }))}
+                            options={categoryOptions}
+                            darkMode={darkMode}
+                        />
                     </div>
-                )}
+                </Modal>
             </div>
         </div>
     );

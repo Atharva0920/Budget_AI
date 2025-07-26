@@ -1,6 +1,6 @@
 import React from 'react';
 import { Search, Bell, User, Eye, EyeOff, Sun, Moon, Menu, X, HandCoins } from 'lucide-react';
-import { ThemeContext } from '../contexts/ThemeContext';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 export function NavigationHeader({ onMenuClick, isMenuOpen }) {
     const {
@@ -41,7 +41,7 @@ export function NavigationHeader({ onMenuClick, isMenuOpen }) {
                             className={`w-full sm:w-64 pl-10 pr-4 py-2 rounded-lg border ${darkMode
                                 ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
                                 : 'bg-white border-gray-300'
-                                } focus:outline-none focus:ring-2 focus:ring-emerald-500`}
+                                } focus:outline-none focus:ring-2 focus:ring-blue-500`}
                         />
                     </div>
 
