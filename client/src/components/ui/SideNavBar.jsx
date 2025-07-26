@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { HandCoins, BarChart3, CreditCard, TrendingUp, X, Menu, Users, Calendar, Target, TrendingDown, PieChart, HelpCircle, User } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
-import { ThemeContext } from '../contexts/ThemeContext';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 const Home = ({ closeMenu }) => {
     const{darkMode} = useContext(ThemeContext)
@@ -12,7 +12,7 @@ const Home = ({ closeMenu }) => {
         { icon: PieChart, label: 'Cash Flow', path: '/cash-flow' },
         { icon: BarChart3, label: 'Reports', path: '/reports', badge: 'BETA' },
         { icon: Target, label: 'Budget', path: '/budget' },
-        { icon: Calendar, label: 'Recurring', path: '/recurring' },
+        { icon: Calendar, label: 'Bills & Subscriptions', path: '/recurring' },
         { icon: Target, label: 'Goals', path: '/goals' },
         { icon: TrendingDown, label: 'Investments', path: '/investments' },
         { icon: HelpCircle, label: 'Advice', path: '/advice' },

@@ -1,18 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     TrendingUp, Wallet, ArrowUpCircle, ArrowDownCircle,
     PieChart, Calendar, Target, AlertCircle, Lightbulb, Eye, Home,
     Car, ShoppingCart, Coffee, User, Search,
 } from 'lucide-react';
-import { ThemeContext } from '../contexts/ThemeContext';
-import { formatCurrency } from '../utils/formatCurrency';
+
+// Import reusable components
+import { Card } from '../components/ui/Card';
+import { StatCard } from '../components/ui/StatCard';
+import { PageHeader } from '../components/ui/PageHeader';
+import { Button } from '../components/ui/Button';
+import { ChartContainer } from '../components/charts/ChartContainer';
+import { useTheme } from '../hooks/useTheme';
+import { formatCurrency } from '../utils/formatters';
 
 const Dashboard = () => {
-    const { 
-        darkMode, 
-        privateMode 
-    } = React.useContext(ThemeContext);
-    console.log('Dashboard rendered with darkMode:', darkMode, 'privateMode:', privateMode);
+    const { darkMode, privateMode } = useTheme();
 
     const financialSummary = {
         totalBalance: 2850000,
@@ -58,256 +61,322 @@ const Dashboard = () => {
         { name: 'New Laptop', target: 120000, current: 96000, percentage: 80 }
     ];
 
+    // Financial Summary Cards
+    const summaryCards = [
+        {
+            title: 'Total Balance',
+            value: formatCurrency(financialSummary.totalBalance, privateMode),
+            icon: Wallet,
+            badge: '+2.5%',
+            changeType: 'positive'
+        },
+        {
+            title: 'Monthly Income',
+            value: formatCurrency(financialSummary.monthlyIncome, privateMode),
+            icon: ArrowUpCircle,
+            badge: '+8.2%',
+            changeType: 'positive'
+        },
+        {
+            title: 'Monthly Expenses',
+            value: formatCurrency(financialSummary.monthlyExpenses, privateMode),
+            icon: ArrowDownCircle,
+            badge: '+12%',
+            changeType: 'negative'
+        },
+        {
+            title: 'Net Cash Flow',
+            value: formatCurrency(financialSummary.netCashFlow, privateMode),
+            icon: TrendingUp,
+            badge: '+5.1%',
+            changeType: 'positive'
+        },
+        {
+            title: 'Savings Progress',
+            value: '',
+            icon: Target,
+            badge: '68%',
+            changeType: 'neutral'
+        }
+    ];
+
+    const SpendingOverviewChart = () => (
+        <div className="flex items-center justify-center mb-6">
+            <div className="relative w-48 h-48">
+                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="40" fill="none" stroke={darkMode ? '#374151' : '#f3f4f6'} strokeWidth="8" />
+                    {spendingData.map((item, index) => {
+                        const offset = spendingData.slice(0, index).reduce((acc, curr) => acc + curr.percentage, 0);
+                        const strokeDasharray = `${item.percentage * 2.51} 251`;
+                        const strokeDashoffset = -offset * 2.51;
+                        return (
+                            <circle
+                                key={index}
+                                cx="50"
+                                cy="50"
+                                r="40"
+                                fill="none"
+                                stroke={item.color.replace('bg-', '').replace('-500', '') === 'blue' ? '#3b82f6' :
+                                    item.color.replace('bg-', '').replace('-500', '') === 'green' ? '#10b981' :
+                                        item.color.replace('bg-', '').replace('-500', '') === 'purple' ? '#8b5cf6' :
+                                            item.color.replace('bg-', '').replace('-500', '') === 'yellow' ? '#f59e0b' : '#ef4444'}
+                                strokeWidth="8"
+                                strokeDasharray={strokeDasharray}
+                                strokeDashoffset={strokeDashoffset}
+                                className="transition-all duration-300 hover:stroke-opacity-75"
+                            />
+                        );
+                    })}
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center">
+                        <p className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                            {formatCurrency(spendingData.reduce((sum, item) => sum + item.amount, 0), privateMode)}
+                        </p>
+                        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Total Spent</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
+    const BudgetUtilizationContent = () => (
+        <div className="space-y-4">
+            {budgetData.map((item, index) => (
+                <div key={index} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                        <span className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                            {item.category}
+                        </span>
+                        <span className={`text-sm ${
+                            item.percentage > 100 ? 'text-red-600' : 
+                            item.percentage > 80 ? 'text-yellow-600' : 'text-green-600'
+                        }`}>
+                            {item.percentage.toFixed(0)}%
+                        </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <div className={`flex-1 bg-gray-200 ${darkMode ? 'bg-gray-700' : ''} rounded-full h-2`}>
+                            <div
+                                className={`h-2 rounded-full transition-all duration-300 ${
+                                    item.percentage > 100 ? 'bg-red-500' :
+                                    item.percentage > 80 ? 'bg-yellow-500' : 'bg-green-500'
+                                }`}
+                                style={{ width: `${Math.min(item.percentage, 100)}%` }}
+                            />
+                        </div>
+                        <div className="text-xs text-gray-500 w-20 text-right">
+                            {formatCurrency(item.used, privateMode)}/{formatCurrency(item.budget, privateMode)}
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+
+    const TransactionItem = ({ transaction }) => (
+        <div key={transaction.id} className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    transaction.amount > 0 ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-600'
+                }`}>
+                    <transaction.icon size={20} />
+                </div>
+                <div>
+                    <p className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                        {transaction.description}
+                    </p>
+                    <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                        {transaction.date} • {transaction.category}
+                    </p>
+                </div>
+            </div>
+            <p className={`text-sm font-semibold ${
+                transaction.amount > 0 ? 'text-green-600' : darkMode ? 'text-white' : 'text-gray-900'
+            }`}>
+                {transaction.amount > 0 ? '+' : ''}{formatCurrency(Math.abs(transaction.amount), privateMode)}
+            </p>
+        </div>
+    );
+
+    const PaymentItem = ({ payment, index }) => (
+        <div key={index} className={`p-4 rounded-lg border ${
+            darkMode ? 'border-gray-700 bg-gray-750' : 'border-gray-200 bg-gray-50'
+        }`}>
+            <div className="flex items-center justify-between mb-2">
+                <p className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {payment.name}
+                </p>
+                <p className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {formatCurrency(payment.amount, privateMode)}
+                </p>
+            </div>
+            <div className="flex items-center justify-between">
+                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    {payment.category}
+                </p>
+                <p className="text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded-full">
+                    {payment.date}
+                </p>
+            </div>
+        </div>
+    );
+
+    const GoalItem = ({ goal, index }) => (
+        <div key={index} className="space-y-2">
+            <div className="flex items-center justify-between">
+                <p className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {goal.name}
+                </p>
+                <p className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {goal.percentage}%
+                </p>
+            </div>
+            <div className={`w-full bg-gray-200 ${darkMode ? 'bg-gray-700' : ''} rounded-full h-2`}>
+                <div
+                    className="bg-emerald-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${goal.percentage}%` }}
+                />
+            </div>
+            <div className="flex items-center justify-between">
+                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    {formatCurrency(goal.current, privateMode)} saved
+                </p>
+                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    Goal: {formatCurrency(goal.target, privateMode)}
+                </p>
+            </div>
+        </div>
+    );
 
     return (
         <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
-            <div className={`transition-all duration-300`}>
+            <div className="transition-all duration-300">
                 <main className="p-6 space-y-6">
-                    <div>
-                        <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Dashboard</h1>
-                        <p className={`mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Track and manage your spending limits</p>
-                    </div>
+                    <PageHeader
+                        title="Dashboard"
+                        subtitle="Track and manage your spending limits"
+                        darkMode={darkMode}
+                    />
+
                     {/* Financial Summary Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-                        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                            <div className="flex items-center justify-between mb-2">
-                                <Wallet className="text-emerald-600" size={24} />
-                                <span className="text-sm text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">+2.5%</span>
-                            </div>
-                            <h3 className={`text-sm font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Total Balance</h3>
-                            <p className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{formatCurrency(financialSummary.totalBalance)}</p>
-                        </div>
-
-                        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                            <div className="flex items-center justify-between mb-2">
-                                <ArrowUpCircle className="text-green-600" size={24} />
-                                <span className="text-sm text-green-600 bg-green-50 px-2 py-1 rounded-full">+8.2%</span>
-                            </div>
-                            <h3 className={`text-sm font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Monthly Income</h3>
-                            <p className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{formatCurrency(financialSummary.monthlyIncome)}</p>
-                        </div>
-
-                        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                            <div className="flex items-center justify-between mb-2">
-                                <ArrowDownCircle className="text-red-600" size={24} />
-                                <span className="text-sm text-red-600 bg-red-50 px-2 py-1 rounded-full">+12%</span>
-                            </div>
-                            <h3 className={`text-sm font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Monthly Expenses</h3>
-                            <p className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{formatCurrency(financialSummary.monthlyExpenses)}</p>
-                        </div>
-
-                        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                            <div className="flex items-center justify-between mb-2">
-                                <TrendingUp className="text-blue-600" size={24} />
-                                <span className="text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded-full">+5.1%</span>
-                            </div>
-                            <h3 className={`text-sm font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Net Cash Flow</h3>
-                            <p className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{formatCurrency(financialSummary.netCashFlow)}</p>
-                        </div>
-
-                        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                            <div className="flex items-center justify-between mb-2">
-                                <Target className="text-purple-600" size={24} />
-                                <span className="text-sm text-purple-600 bg-purple-50 px-2 py-1 rounded-full">68%</span>
-                            </div>
-                            <h3 className={`text-sm font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Savings Progress</h3>
-                            <div className="mt-3">
-                                <div className={`w-full bg-gray-200 ${darkMode ? 'bg-gray-700' : ''} rounded-full h-2`}>
-                                    <div className="bg-purple-600 h-2 rounded-full" style={{ width: `${financialSummary.savingsProgress}%` }}></div>
-                                </div>
-                            </div>
-                        </div>
+                        {summaryCards.map((card, index) => (
+                            <StatCard
+                                key={index}
+                                {...card}
+                                darkMode={darkMode}
+                            >
+                                {/* Special content for Savings Progress card */}
+                                {card.title === 'Savings Progress' && (
+                                    <div className="mt-3">
+                                        <div className={`w-full bg-gray-200 ${darkMode ? 'bg-gray-700' : ''} rounded-full h-2`}>
+                                            
+                                            <div 
+                                                className="bg-purple-600 h-2 rounded-full" 
+                                                style={{ width: `${financialSummary.savingsProgress}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+                            </StatCard>
+                        ))}
                     </div>
 
                     {/* Second Row - Charts */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Spending Overview */}
-                        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                            <div className="flex items-center justify-between mb-6">
-                                <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Spending Overview</h3>
-                                <PieChart className={`${darkMode ? 'text-gray-400' : 'text-gray-500'}`} size={20} />
-                            </div>
-                            <div className="flex items-center justify-center mb-6">
-                                <div className="relative w-48 h-48">
-                                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                                        <circle cx="50" cy="50" r="40" fill="none" stroke={darkMode ? '#374151' : '#f3f4f6'} strokeWidth="8" />
-                                        {spendingData.map((item, index) => {
-                                            const offset = spendingData.slice(0, index).reduce((acc, curr) => acc + curr.percentage, 0);
-                                            const strokeDasharray = `${item.percentage * 2.51} 251`;
-                                            const strokeDashoffset = -offset * 2.51;
-                                            return (
-                                                <circle
-                                                    key={index}
-                                                    cx="50"
-                                                    cy="50"
-                                                    r="40"
-                                                    fill="none"
-                                                    stroke={item.color.replace('bg-', '').replace('-500', '') === 'blue' ? '#3b82f6' :
-                                                        item.color.replace('bg-', '').replace('-500', '') === 'green' ? '#10b981' :
-                                                            item.color.replace('bg-', '').replace('-500', '') === 'purple' ? '#8b5cf6' :
-                                                                item.color.replace('bg-', '').replace('-500', '') === 'yellow' ? '#f59e0b' : '#ef4444'}
-                                                    strokeWidth="8"
-                                                    strokeDasharray={strokeDasharray}
-                                                    strokeDashoffset={strokeDashoffset}
-                                                    className="transition-all duration-300 hover:stroke-opacity-75"
-                                                />
-                                            );
-                                        })}
-                                    </svg>
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                        <div className="text-center">
-                                            <p className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                                {formatCurrency(spendingData.reduce((sum, item) => sum + item.amount, 0))}
-                                            </p>
-                                            <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Total Spent</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <ChartContainer
+                            title="Spending Overview"
+                            darkMode={darkMode}
+                            actions={<PieChart className={darkMode ? 'text-gray-400' : 'text-gray-500'} size={20} />}
+                        >
+                            <SpendingOverviewChart />
                             <div className="space-y-3">
                                 {spendingData.map((item, index) => (
                                     <div key={index} className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
-                                            <div className={`w-3 h-3 rounded-full ${item.color.replace('bg-', '').replace('-500', '') === 'blue' ? 'bg-blue-500' :
+                                            <div className={`w-3 h-3 rounded-full ${
+                                                item.color.replace('bg-', '').replace('-500', '') === 'blue' ? 'bg-blue-500' :
                                                 item.color.replace('bg-', '').replace('-500', '') === 'green' ? 'bg-green-500' :
-                                                    item.color.replace('bg-', '').replace('-500', '') === 'purple' ? 'bg-purple-500' :
-                                                        item.color.replace('bg-', '').replace('-500', '') === 'yellow' ? 'bg-yellow-500' : 'bg-red-500'
-                                                }`}></div>
-                                            <span className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{item.category}</span>
-                                        </div>
-                                        <div className="text-right">
-                                            <p className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{formatCurrency(item.amount)}</p>
-                                            <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{item.percentage}%</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Budget Utilization */}
-                        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                            <div className="flex items-center justify-between mb-6">
-                                <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Budget Utilization</h3>
-                                <Target className={`${darkMode ? 'text-gray-400' : 'text-gray-500'}`} size={20} />
-                            </div>
-                            <div className="space-y-4">
-                                {budgetData.map((item, index) => (
-                                    <div key={index} className="space-y-2">
-                                        <div className="flex items-center justify-between">
-                                            <span className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{item.category}</span>
-                                            <span className={`text-sm ${item.percentage > 100 ? 'text-red-600' : item.percentage > 80 ? 'text-yellow-600' : 'text-green-600'}`}>
-                                                {item.percentage.toFixed(0)}%
+                                                item.color.replace('bg-', '').replace('-500', '') === 'purple' ? 'bg-purple-500' :
+                                                item.color.replace('bg-', '').replace('-500', '') === 'yellow' ? 'bg-yellow-500' : 'bg-red-500'
+                                            }`} />
+                                            <span className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                                {item.category}
                                             </span>
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                            <div className={`flex-1 bg-gray-200 ${darkMode ? 'bg-gray-700' : ''} rounded-full h-2`}>
-                                                <div
-                                                    className={`h-2 rounded-full transition-all duration-300 ${item.percentage > 100 ? 'bg-red-500' :
-                                                        item.percentage > 80 ? 'bg-yellow-500' : 'bg-green-500'
-                                                        }`}
-                                                    style={{ width: `${Math.min(item.percentage, 100)}%` }}
-                                                ></div>
-                                            </div>
-                                            <div className="text-xs text-gray-500 w-20 text-right">
-                                                {formatCurrency(item.used)}/{formatCurrency(item.budget)}
-                                            </div>
+                                        <div className="text-right">
+                                            <p className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                                {formatCurrency(item.amount, privateMode)}
+                                            </p>
+                                            <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                                                {item.percentage}%
+                                            </p>
                                         </div>
                                     </div>
                                 ))}
                             </div>
-                        </div>
+                        </ChartContainer>
+
+                        <ChartContainer
+                            title="Budget Utilization"
+                            darkMode={darkMode}
+                            actions={<Target className={darkMode ? 'text-gray-400' : 'text-gray-500'} size={20} />}
+                        >
+                            <BudgetUtilizationContent />
+                        </ChartContainer>
                     </div>
 
                     {/* Third Row */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        {/* Recent Transactions */}
-                        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                            <div className="flex items-center justify-between mb-6">
-                                <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Recent Transactions</h3>
-                                <button className="text-emerald-600 text-sm font-medium hover:text-emerald-700 flex items-center gap-1">
-                                    View All <Eye size={16} />
-                                </button>
-                            </div>
+                        <ChartContainer
+                            title="Recent Transactions"
+                            darkMode={darkMode}
+                            actions={
+                                <Button variant="ghost" size="sm" icon={Eye}>
+                                    View All
+                                </Button>
+                            }
+                        >
                             <div className="space-y-4">
                                 {recentTransactions.map((transaction) => (
-                                    <div key={transaction.id} className="flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${transaction.amount > 0 ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-600'
-                                                }`}>
-                                                <transaction.icon size={20} />
-                                            </div>
-                                            <div>
-                                                <p className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>{transaction.description}</p>
-                                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{transaction.date} • {transaction.category}</p>
-                                            </div>
-                                        </div>
-                                        <p className={`text-sm font-semibold ${transaction.amount > 0 ? 'text-green-600' : darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                            {transaction.amount > 0 ? '+' : ''}{formatCurrency(Math.abs(transaction.amount))}
-                                        </p>
-                                    </div>
+                                    <TransactionItem key={transaction.id} transaction={transaction} />
                                 ))}
                             </div>
-                        </div>
+                        </ChartContainer>
 
-                        {/* Upcoming Payments */}
-                        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                            <div className="flex items-center justify-between mb-6">
-                                <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Upcoming Payments</h3>
-                                <Calendar className={`${darkMode ? 'text-gray-400' : 'text-gray-500'}`} size={20} />
-                            </div>
+                        <ChartContainer
+                            title="Upcoming Payments"
+                            darkMode={darkMode}
+                            actions={<Calendar className={darkMode ? 'text-gray-400' : 'text-gray-500'} size={20} />}
+                        >
                             <div className="space-y-4">
                                 {upcomingPayments.map((payment, index) => (
-                                    <div key={index} className={`p-4 rounded-lg border ${darkMode ? 'border-gray-700 bg-gray-750' : 'border-gray-200 bg-gray-50'}`}>
-                                        <div className="flex items-center justify-between mb-2">
-                                            <p className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>{payment.name}</p>
-                                            <p className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{formatCurrency(payment.amount)}</p>
-                                        </div>
-                                        <div className="flex items-center justify-between">
-                                            <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{payment.category}</p>
-                                            <p className="text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded-full">{payment.date}</p>
-                                        </div>
-                                    </div>
+                                    <PaymentItem key={index} payment={payment} index={index} />
                                 ))}
                             </div>
-                        </div>
+                        </ChartContainer>
 
-                        {/* Goals Snapshot */}
-                        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                            <div className="flex items-center justify-between mb-6">
-                                <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Goals Progress</h3>
-                                <Target className={`${darkMode ? 'text-gray-400' : 'text-gray-500'}`} size={20} />
-                            </div>
+                        <ChartContainer
+                            title="Goals Progress"
+                            darkMode={darkMode}
+                            actions={<Target className={darkMode ? 'text-gray-400' : 'text-gray-500'} size={20} />}
+                        >
                             <div className="space-y-6">
                                 {goals.map((goal, index) => (
-                                    <div key={index} className="space-y-2">
-                                        <div className="flex items-center justify-between">
-                                            <p className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>{goal.name}</p>
-                                            <p className={`text-sm font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{goal.percentage}%</p>
-                                        </div>
-                                        <div className={`w-full bg-gray-200 ${darkMode ? 'bg-gray-700' : ''} rounded-full h-2`}>
-                                            <div
-                                                className="bg-emerald-600 h-2 rounded-full transition-all duration-300"
-                                                style={{ width: `${goal.percentage}%` }}
-                                            ></div>
-                                        </div>
-                                        <div className="flex items-center justify-between">
-                                            <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{formatCurrency(goal.current)} saved</p>
-                                            <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Goal: {formatCurrency(goal.target)}</p>
-                                        </div>
-                                    </div>
+                                    <GoalItem key={index} goal={goal} index={index} />
                                 ))}
                             </div>
-                        </div>
+                        </ChartContainer>
                     </div>
 
                     {/* Fourth Row - Insights and Tips */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Smart Insights */}
-                        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                            <div className="flex items-center justify-between mb-6">
-                                <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Smart Insights & Alerts</h3>
-                                <AlertCircle className="text-orange-500" size={20} />
-                            </div>
+                        <ChartContainer
+                            title="Smart Insights & Alerts"
+                            darkMode={darkMode}
+                            actions={<AlertCircle className="text-orange-500" size={20} />}
+                        >
                             <div className="space-y-4">
                                 <div className={`p-4 bg-orange-50 border border-orange-200 rounded-lg ${darkMode ? 'bg-gray-300' : 'border-orange-200'}`}>
                                     <div className="flex items-start gap-3">
@@ -337,14 +406,13 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </ChartContainer>
 
-                        {/* AI Assistant & Tips */}
-                        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                            <div className="flex items-center justify-between mb-6">
-                                <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>AI Assistant & Tips</h3>
-                                <Lightbulb className={`${darkMode ? 'text-gray-400' : 'text-gray-500'}`} size={20} />
-                            </div>
+                        <ChartContainer
+                            title="AI Assistant & Tips"
+                            darkMode={darkMode}
+                            actions={<Lightbulb className={darkMode ? 'text-gray-400' : 'text-gray-500'} size={20} />}
+                        >
                             <div className="space-y-4">
                                 <div className="p-4 bg-gray-100 rounded-lg">
                                     <div className="flex items-start gap-3">
@@ -374,12 +442,12 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </ChartContainer>
                     </div>
                 </main>
             </div>
         </div>
     );
-}
+};
 
 export default Dashboard;

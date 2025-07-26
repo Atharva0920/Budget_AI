@@ -1,5 +1,4 @@
-import { useState, useContext } from 'react';
-
+import React, { useState } from 'react';
 import {
     TrendingUp,
     TrendingDown,
@@ -7,7 +6,6 @@ import {
     PiggyBank,
     Calendar,
     Download,
-    Filter,
     BarChart3,
     PieChart,
     LineChart,
@@ -16,16 +14,35 @@ import {
     Target,
     Wallet
 } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart as RechartsPieChart, Cell, LineChart as RechartsLineChart, Line, Area, AreaChart, Pie, Tooltip } from 'recharts';
-import { ThemeContext } from '../contexts/ThemeContext';
-import { formatCurrency } from '../utils/formatCurrency';
+import { 
+    BarChart, 
+    Bar, 
+    XAxis, 
+    YAxis, 
+    CartesianGrid, 
+    ResponsiveContainer, 
+    PieChart as RechartsPieChart, 
+    Cell, 
+    Area, 
+    AreaChart, 
+    Pie, 
+    Tooltip 
+} from 'recharts';
+
+// Import reusable components
+import { Card } from '../components/ui/Card';
+import { StatCard } from '../components/ui/StatCard';
+import { PageHeader } from '../components/ui/PageHeader';
+import { Button } from '../components/ui/Button';
+import { Select } from '../components/ui/Select';
+import { useTheme } from '../hooks/useTheme';
+import { formatCurrency } from '../utils/formatters';
 
 const ReportsPage = () => {
-    console.log('ResponsiveContainer:', ResponsiveContainer);
-
     const [selectedPeriod, setSelectedPeriod] = useState('thisMonth');
     const [selectedChart, setSelectedChart] = useState('spending');
-    const { darkMode, privateMode } = useContext(ThemeContext);
+    const { darkMode, privateMode } = useTheme();
+
     // Mock data for demonstration
     const summaryData = {
         totalIncome: 5200,
@@ -67,90 +84,102 @@ const ReportsPage = () => {
         { value: 'comparison', label: 'Income vs Expenses', icon: BarChart3 }
     ];
 
+    // Summary cards configuration
+    const summaryCards = [
+        {
+            title: 'Total Income',
+            value: formatCurrency(summaryData.totalIncome, privateMode),
+            icon: TrendingUp,
+            change: '+8.2% from last month',
+            changeType: 'positive'
+        },
+        {
+            title: 'Total Expenses',
+            value: formatCurrency(summaryData.totalExpenses, privateMode),
+            icon: TrendingDown,
+            change: '+5.1% from last month',
+            changeType: 'negative'
+        },
+        {
+            title: 'Savings',
+            value: formatCurrency(summaryData.savings, privateMode),
+            icon: PiggyBank,
+            change: '+12.3% from last month',
+            changeType: 'positive'
+        },
+        {
+            title: 'Net Balance',
+            value: formatCurrency(summaryData.netBalance, privateMode),
+            icon: Wallet,
+            badge: summaryData.netBalance > 0 ? 'Positive' : 'Negative',
+            changeType: summaryData.netBalance > 0 ? 'positive' : 'negative',
+            subtitle: `${((summaryData.savings / summaryData.totalIncome) * 100).toFixed(1)}% savings rate`
+        }
+    ];
+
+    // Quick stats data
+    const quickStats = [
+        {
+            icon: Target,
+            label: 'Savings Goal',
+            value: '73% Complete',
+            color: 'text-green-600'
+        },
+        {
+            icon: TrendingUp,
+            label: 'Avg. Monthly Income',
+            value: formatCurrency(5100, privateMode),
+            color: 'text-blue-600'
+        },
+        {
+            icon: TrendingDown,
+            label: 'Avg. Monthly Expenses',
+            value: formatCurrency(3650, privateMode),
+            color: 'text-orange-600'
+        },
+        {
+            icon: PiggyBank,
+            label: 'Best Savings Month',
+            value: 'February',
+            color: 'text-purple-600'
+        }
+    ];
+
+    const headerActions = (
+        <>
+            <Select
+                value={selectedPeriod}
+                onChange={(e) => setSelectedPeriod(e.target.value)}
+                options={periodOptions}
+                darkMode={darkMode}
+                className="min-w-[150px]"
+            />
+            <Button icon={Download}>
+                Export
+            </Button>
+        </>
+    );
+
     return (
         <div className={`min-h-screen transition-all duration-300 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
             <div className="max-w-7xl mx-auto px-4 py-8">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-8">
-                    <div>
-                        <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>Financial Reports</h1>
-                        <p className={`mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Analyze your income, expenses, and savings patterns</p>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        {/* Period Filter */}
-                        <div className="relative">
-                            <select
-                                value={selectedPeriod}
-                                onChange={(e) => setSelectedPeriod(e.target.value)}
-                                className={`appearance-none px-4 py-2 pr-8 rounded-lg border ${darkMode
-                                    ? 'bg-gray-800 border-gray-700 text-white'
-                                    : 'bg-white border-gray-200 text-gray-900'
-                                    } focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                            >
-                                {periodOptions.map(option => (
-                                    <option key={option.value} value={option.value}>{option.label}</option>
-                                ))}
-                            </select>
-                            <Calendar className={`absolute right-2 top-1/2 transform -translate-y-1/2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`} size={16} />
-                        </div>
-
-                        {/* Export Button */}
-                        <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 hover:scale-105">
-                            <Download size={18} />
-                            Export
-                        </button>
-                    </div>
-                </div>
+                <PageHeader
+                    title="Financial Reports"
+                    subtitle="Analyze your income, expenses, and savings patterns"
+                    actions={headerActions}
+                    darkMode={darkMode}
+                />
 
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    {/* Total Income */}
-                    <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-all duration-200 hover:shadow-md`}>
-                        <div className="flex items-center justify-between mb-2">
-                            <TrendingUp className="text-green-600" size={24} />
-                            <ArrowUpRight className="text-green-600" size={16} />
-                        </div>
-                        <h3 className={`text-sm font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Total Income</h3>
-                        <p className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{formatCurrency(summaryData.totalIncome)}</p>
-                        <p className="text-sm text-green-600">+8.2% from last month</p>
-                    </div>
-
-                    {/* Total Expenses */}
-                    <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-all duration-200 hover:shadow-md`}>
-                        <div className="flex items-center justify-between mb-2">
-                            <TrendingDown className="text-red-600" size={24} />
-                            <ArrowUpRight className="text-red-600" size={16} />
-                        </div>
-                        <h3 className={`text-sm font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Total Expenses</h3>
-                        <p className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{formatCurrency(summaryData.totalExpenses)}</p>
-                        <p className="text-sm text-red-600">+5.1% from last month</p>
-                    </div>
-
-                    {/* Savings */}
-                    <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-all duration-200 hover:shadow-md`}>
-                        <div className="flex items-center justify-between mb-2">
-                            <PiggyBank className="text-blue-600" size={24} />
-                            <ArrowUpRight className="text-blue-600" size={16} />
-                        </div>
-                        <h3 className={`text-sm font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Savings</h3>
-                        <p className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{formatCurrency(summaryData.savings)}</p>
-                        <p className="text-sm text-blue-600">+12.3% from last month</p>
-                    </div>
-
-                    {/* Net Balance */}
-                    <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-all duration-200 hover:shadow-md`}>
-                        <div className="flex items-center justify-between mb-2">
-                            <Wallet className="text-purple-600" size={24} />
-                            <span className={`text-sm px-2 py-1 rounded-full ${summaryData.netBalance > 0 ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50'}`}>
-                                {summaryData.netBalance > 0 ? 'Positive' : 'Negative'}
-                            </span>
-                        </div>
-                        <h3 className={`text-sm font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Net Balance</h3>
-                        <p className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{formatCurrency(summaryData.netBalance)}</p>
-                        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                            {((summaryData.savings / summaryData.totalIncome) * 100).toFixed(1)}% savings rate
-                        </p>
-                    </div>
+                    {summaryCards.map((card, index) => (
+                        <StatCard
+                            key={index}
+                            {...card}
+                            darkMode={darkMode}
+                            hover
+                        />
+                    ))}
                 </div>
 
                 {/* Chart Controls */}
@@ -158,25 +187,21 @@ const ReportsPage = () => {
                     {chartOptions.map(option => {
                         const IconComponent = option.icon;
                         return (
-                            <button
+                            <Button
                                 key={option.value}
                                 onClick={() => setSelectedChart(option.value)}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${selectedChart === option.value
-                                    ? 'bg-blue-600 text-white'
-                                    : darkMode
-                                        ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                                        : 'bg-white text-gray-600 hover:bg-gray-50'
-                                    } border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}
+                                variant={selectedChart === option.value ? 'primary' : 'secondary'}
+                                icon={IconComponent}
+                                darkMode={darkMode}
                             >
-                                <IconComponent size={16} />
                                 {option.label}
-                            </button>
+                            </Button>
                         );
                     })}
                 </div>
 
                 {/* Charts Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                     {/* Main Chart */}
                     <div className={`lg:col-span-2 ${darkMode ? 'bg-gray-800' : 'bg-white'} p-6 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
                         <h3 className={`text-lg font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
@@ -200,7 +225,7 @@ const ReportsPage = () => {
                                             ))}
                                         </Pie>
 
-                                        <Tooltip formatter={(value) => formatCurrency(value)}></Tooltip>
+                                        <Tooltip formatter={(value) => formatCurrency(value, privateMode)}></Tooltip>
                                     </RechartsPieChart>
                                 </ResponsiveContainer>
                             )}
@@ -214,7 +239,7 @@ const ReportsPage = () => {
                                         <Area type="monotone" dataKey="income" stackId="1" stroke="#10B981" fill="#10B981" fillOpacity={0.3} />
                                         <Area type="monotone" dataKey="expenses" stackId="2" stroke="#EF4444" fill="#EF4444" fillOpacity={0.3} />
                                         <RechartsPieChart>
-                                            <Tooltip formatter={(value) => formatCurrency(value)}></Tooltip>
+                                            <Tooltip formatter={(value) => formatCurrency(value, privateMode)}></Tooltip>
                                         </RechartsPieChart>
                                     </AreaChart>
                                 </ResponsiveContainer>
@@ -229,7 +254,7 @@ const ReportsPage = () => {
                                         <Bar dataKey="income" fill="#10B981" />
                                         <Bar dataKey="expenses" fill="#EF4444" />
                                         <RechartsPieChart>
-                                            <Tooltip formatter={(value) => formatCurrency(value)}></Tooltip>
+                                            <Tooltip formatter={(value) => formatCurrency(value, privateMode)}></Tooltip>
                                         </RechartsPieChart>
                                     </BarChart>
                                 </ResponsiveContainer>
@@ -248,7 +273,7 @@ const ReportsPage = () => {
                                         <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{category.name}</span>
                                     </div>
                                     <span className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                        {formatCurrency(category.value)}
+                                        {formatCurrency(category.value, privateMode)}
                                     </span>
                                 </div>
                             ))}
@@ -258,45 +283,24 @@ const ReportsPage = () => {
 
                 {/* Quick Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-4 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                        <div className="flex items-center gap-3">
-                            <Target className="text-green-600" size={20} />
-                            <div>
-                                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Savings Goal</p>
-                                <p className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>73% Complete</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-4 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                        <div className="flex items-center gap-3">
-                            <TrendingUp className="text-blue-600" size={20} />
-                            <div>
-                                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Avg. Monthly Income</p>
-                                <p className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{formatCurrency(5100)}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-4 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                        <div className="flex items-center gap-3">
-                            <TrendingDown className="text-orange-600" size={20} />
-                            <div>
-                                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Avg. Monthly Expenses</p>
-                                <p className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{formatCurrency(3650)}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-4 rounded-xl shadow-sm border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                        <div className="flex items-center gap-3">
-                            <PiggyBank className="text-purple-600" size={20} />
-                            <div>
-                                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Best Savings Month</p>
-                                <p className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>February</p>
-                            </div>
-                        </div>
-                    </div>
+                    {quickStats.map((stat, index) => {
+                        const IconComponent = stat.icon;
+                        return (
+                            <Card key={index} darkMode={darkMode} hover className="p-4">
+                                <div className="flex items-center gap-3">
+                                    <IconComponent className={stat.color} size={20} />
+                                    <div>
+                                        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                            {stat.label}
+                                        </p>
+                                        <p className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                            {stat.value}
+                                        </p>
+                                    </div>
+                                </div>
+                            </Card>
+                        );
+                    })}
                 </div>
             </div>
         </div>
