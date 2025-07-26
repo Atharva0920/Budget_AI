@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import SideNavBar from '../components/SideNavBar';
+import SideNavBar from '../components/ui/SideNavBar';
 import { Outlet } from 'react-router-dom';
-import { NavigationHeader } from '../components/NavigationHeader'
+import { NavigationHeader } from '../components/ui/NavigationHeader'
 
 export default function Layout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
