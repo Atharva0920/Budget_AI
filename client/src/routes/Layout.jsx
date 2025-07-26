@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Home from '../pages/Home';
+import SideNavBar from '../components/SideNavBar';
 import { Outlet } from 'react-router-dom';
-import { NavigationHeader } from '../pages/NavigationHeader';
+import { NavigationHeader } from '../components/NavigationHeader'
 
 export default function Layout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,21 +23,20 @@ export default function Layout() {
       <div className="flex flex-1 overflow-hidden">
 
         {/* Sidebar */}
-        <aside className={`fixed lg:static top-100 left-0 h-full w-64 z-40 bg-white transform transition-transform duration-300 ease-in-out
-            ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} 
-            lg:translate-x-0`}>
-          <Home
+        <aside className={`fixed lg:static top-16 left-0 h-[calc(100vh-4rem)] w-64 z-40 bg-white transform transition-transform duration-300 ease-in-out 
+                          ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
+          <SideNavBar
             closeMenu={() => setIsMenuOpen(false)}
             setTitle
             isMenuOpen
             onMenuClick={() => setIsMenuOpen(!isMenuOpen)}
           />
         </aside>
-
+    
         {/* Dim background for small screens */}
         {isMenuOpen && (
           <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+            className="fixed inset-0 bg-black bg-opacity-40 z-30 lg:hidden"
             onClick={() => setIsMenuOpen(false)}
           />
         )}
