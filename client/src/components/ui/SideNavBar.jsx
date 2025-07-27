@@ -1,22 +1,19 @@
-import React, { useContext, useState } from 'react';
-import { HandCoins, BarChart3, CreditCard, TrendingUp, X, Menu, Users, Calendar, Target, TrendingDown, PieChart, HelpCircle, User } from 'lucide-react';
+
+import { BarChart3, CreditCard, TrendingUp, Users, Calendar, Target, TrendingDown, User } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
-import { ThemeContext } from '../../contexts/ThemeContext';
+import { useTheme } from '../../hooks/useTheme';
 
 const Home = ({ closeMenu }) => {
-    const{darkMode} = useContext(ThemeContext)
+    const{darkMode} = useTheme();
     const navigationItems = [
         { icon: BarChart3, label: 'Dashboard', path: '/dashboard' },
         { icon: CreditCard, label: 'Accounts', path: '/accounts' },
         { icon: TrendingUp, label: 'Transactions', path: '/transactions' },
-        { icon: PieChart, label: 'Cash Flow', path: '/cash-flow' },
         { icon: BarChart3, label: 'Reports', path: '/reports', badge: 'BETA' },
         { icon: Target, label: 'Budget', path: '/budget' },
         { icon: Calendar, label: 'Bills & Subscriptions', path: '/recurring' },
-        { icon: Target, label: 'Goals', path: '/goals' },
         { icon: TrendingDown, label: 'Investments', path: '/investments' },
-        { icon: HelpCircle, label: 'Advice', path: '/advice' },
-        { icon: Users, label: 'Assistant', path: '/assistant' }
+        { icon: Users, label: 'AI Assistant', path: '/assistant' }
     ];
 
     return (
