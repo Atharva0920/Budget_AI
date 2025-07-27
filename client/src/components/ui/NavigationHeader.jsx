@@ -1,6 +1,6 @@
 import React from 'react';
 import { Search, Bell, User, Eye, EyeOff, Sun, Moon, Menu, X, HandCoins } from 'lucide-react';
-import { ThemeContext } from '../../contexts/ThemeContext';
+import { useTheme } from '../../hooks/useTheme';
 
 export function NavigationHeader({ onMenuClick, isMenuOpen }) {
     const {
@@ -8,7 +8,7 @@ export function NavigationHeader({ onMenuClick, isMenuOpen }) {
         toggleDarkMode,
         privateMode,
         togglePrivateMode
-    } = React.useContext(ThemeContext);
+    } = useTheme();
     return (
         <header
             className={`${darkMode ? 'bg-gray-800 border-gray-700 shadow drop-shadow-sm' : 'bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 border-gray-200 shadow drop-shadow-sm'

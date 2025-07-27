@@ -1,7 +1,7 @@
-import { useContext } from "react";
-import { ThemeContext } from "../contexts/ThemeContext";
+import { useTheme } from "../hooks/useTheme";
+
 const Recurring = () => {
-    const { darkMode, privateMode } = useContext = { ThemeContext }
+    const { darkMode, privateMode } = useTheme();
     return (
         <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
             <div className={`transition-all duration-300`}>
