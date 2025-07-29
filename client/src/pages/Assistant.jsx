@@ -112,31 +112,55 @@ const AssistantPage = () => {
 
     const headerActions = (
         <div className="flex items-center gap-2">
-            <Button
-                variant="ghost"
-                icon={Search}
+            <Button 
+                variant="ghost" 
+                icon={Search} 
                 size="sm"
                 darkMode={darkMode}
             />
-            <Button
-                variant="ghost"
-                icon={Bell}
+            <Button 
+                variant="ghost" 
+                icon={Bell} 
                 size="sm"
                 darkMode={darkMode}
             />
-            <Button
+            <Button 
                 onClick={() => setShowSidebar(!showSidebar)}
-                variant="ghost"
-                icon={MoreVertical}
+                variant="ghost" 
+                icon={MoreVertical} 
                 size="sm"
                 darkMode={darkMode}
             />
         </div>
     );
-    const endOfContent = document.getElementById('endOfContent');
-    if (endOfContent) {
-        endOfContent.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    }
+
+    // Summary stats for assistant usage
+    const summaryCards = [
+        {
+            title: 'Conversations',
+            value: chats.length.toString(),
+            icon: MessageCircle,
+            badge: 'Active',
+            changeType: 'positive',
+            subtitle: 'Chat sessions'
+        },
+        {
+            title: 'Messages',
+            value: chats.reduce((sum, chat) => sum + chat.messageCount, 0).toString(),
+            icon: Bot,
+            badge: 'Total',
+            changeType: 'neutral',
+            subtitle: 'Exchanged'
+        },
+        {
+            title: 'Insights',
+            value: '12',
+            icon: Sparkles,
+            badge: 'This week',
+            changeType: 'positive',
+            subtitle: 'Generated'
+        }
+    ];
 
     return (
         <div className={`min-h-screen transition-all duration-300 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
@@ -166,29 +190,32 @@ const AssistantPage = () => {
                                             darkMode={darkMode}
                                         />
                                     </div>
-
+                                    
                                     <div className="space-y-2">
                                         {chats.map(chat => (
                                             <div
                                                 key={chat.id}
-                                                className={`p-3 rounded-lg cursor-pointer transition-all duration-200 group ${activeChat === chat.id
-                                                    ? darkMode
-                                                        ? 'bg-blue-600/20 border-l-4 border-blue-500'
-                                                        : 'bg-blue-50 border-l-4 border-blue-500'
-                                                    : darkMode
-                                                        ? 'hover:bg-gray-800'
-                                                        : 'hover:bg-gray-50'
-                                                    }`}
+                                                className={`p-3 rounded-lg cursor-pointer transition-all duration-200 group ${
+                                                    activeChat === chat.id 
+                                                        ? darkMode 
+                                                            ? 'bg-blue-600/20 border-l-4 border-blue-500' 
+                                                            : 'bg-blue-50 border-l-4 border-blue-500'
+                                                        : darkMode
+                                                            ? 'hover:bg-gray-800'
+                                                            : 'hover:bg-gray-50'
+                                                }`}
                                                 onClick={() => setActiveChat(chat.id)}
                                             >
                                                 <div className="flex items-center justify-between">
                                                     <div className="flex-1 min-w-0">
-                                                        <div className={`font-medium text-sm truncate ${darkMode ? 'text-white' : 'text-gray-900'
-                                                            }`}>
+                                                        <div className={`font-medium text-sm truncate ${
+                                                            darkMode ? 'text-white' : 'text-gray-900'
+                                                        }`}>
                                                             {chat.title}
                                                         </div>
-                                                        <div className={`text-xs mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'
-                                                            }`}>
+                                                        <div className={`text-xs mt-1 ${
+                                                            darkMode ? 'text-gray-400' : 'text-gray-500'
+                                                        }`}>
                                                             {chat.time} • {chat.messageCount} messages
                                                         </div>
                                                     </div>
@@ -216,10 +243,11 @@ const AssistantPage = () => {
                                                 <button
                                                     key={index}
                                                     onClick={() => handleQuickAction(action.text)}
-                                                    className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-all duration-200 ${darkMode
-                                                        ? 'hover:bg-gray-800 text-gray-300'
-                                                        : 'hover:bg-gray-50 text-gray-700'
-                                                        }`}
+                                                    className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-all duration-200 ${
+                                                        darkMode 
+                                                            ? 'hover:bg-gray-800 text-gray-300' 
+                                                            : 'hover:bg-gray-50 text-gray-700'
+                                                    }`}
                                                 >
                                                     <div className={`p-2 rounded-lg bg-${action.color}-100`}>
                                                         <IconComponent className={`text-${action.color}-600`} size={16} />
@@ -284,18 +312,18 @@ const AssistantPage = () => {
                                                     </div>
                                                 )}
                                             </div>
-                                            <div className={`px-4 py-3 rounded-2xl ${msg.type === 'user'
-                                                ? 'bg-blue-600 text-white'
-                                                : darkMode
-                                                    ? 'bg-gray-800 text-gray-100'
-                                                    : 'bg-gray-100 text-gray-800'
-                                                }`}>
+                                            <div className={`px-4 py-3 rounded-2xl ${
+                                                msg.type === 'user'
+                                                    ? 'bg-blue-600 text-white'
+                                                    : darkMode
+                                                        ? 'bg-gray-800 text-gray-100'
+                                                        : 'bg-gray-100 text-gray-800'
+                                            }`}>
                                                 <p className="text-sm leading-relaxed">{msg.content}</p>
                                             </div>
                                         </div>
                                     </div>
                                 ))}
-                                <div id="endOfContent"></div>
                             </div>
 
                             {/* Message Input */}
@@ -319,17 +347,20 @@ const AssistantPage = () => {
                                         Send
                                     </Button>
                                 </div>
-
+                                
                                 {/* Disclaimer */}
-                                <div className={`flex items-start gap-2 mt-4 p-3 rounded-lg ${darkMode ? 'bg-yellow-900/20 border border-yellow-800/30' : 'bg-yellow-50 border border-yellow-200'
-                                    }`}>
-                                    <AlertCircle className={`mt-0.5 flex-shrink-0 ${darkMode ? 'text-yellow-400' : 'text-yellow-600'
-                                        }`} size={16} />
+                                <div className={`flex items-start gap-2 mt-4 p-3 rounded-lg ${
+                                    darkMode ? 'bg-yellow-900/20 border border-yellow-800/30' : 'bg-yellow-50 border border-yellow-200'
+                                }`}>
+                                    <AlertCircle className={`mt-0.5 flex-shrink-0 ${
+                                        darkMode ? 'text-yellow-400' : 'text-yellow-600'
+                                    }`} size={16} />
                                     <div>
-                                        <p className={`text-xs leading-relaxed ${darkMode ? 'text-yellow-200' : 'text-yellow-800'
-                                            }`}>
-                                            Answers from the Assistant may occasionally contain incorrect or inaccurate information.
-                                            The Assistant is intended for informational purposes only and is not intended to provide
+                                        <p className={`text-xs leading-relaxed ${
+                                            darkMode ? 'text-yellow-200' : 'text-yellow-800'
+                                        }`}>
+                                            Answers from the Assistant may occasionally contain incorrect or inaccurate information. 
+                                            The Assistant is intended for informational purposes only and is not intended to provide 
                                             personal financial advice.{' '}
                                             <button className="text-blue-500 hover:text-blue-600 underline">
                                                 Learn more
