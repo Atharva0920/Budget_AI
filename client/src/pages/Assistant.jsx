@@ -161,6 +161,10 @@ const AssistantPage = () => {
             subtitle: 'Generated'
         }
     ];
+    const endOfChatWindow = document.getElementById('endOfChatWindow');
+    if(endOfChatWindow){
+        endOfChatWindow.scrollIntoView({behavior:'instant' , block:'end' })
+    }
 
     return (
         <div className={`min-h-screen transition-all duration-300 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
@@ -324,6 +328,7 @@ const AssistantPage = () => {
                                         </div>
                                     </div>
                                 ))}
+                                <div id='endOfChatWindow'></div>
                             </div>
 
                             {/* Message Input */}
