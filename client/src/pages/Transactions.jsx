@@ -53,12 +53,11 @@ const TransactionsPage = () => {
 
     const { darkMode, privateMode } = useTheme();
 
-    // Sample transactions data
-    const [transactions] = useState([
+    const [transactions, setTransactions] = useState([
         {
             id: 1,
             type: 'expense',
-            amount: -85.50,
+            amount: 85.50,
             description: 'Grocery Shopping',
             category: 'food',
             paymentMethod: 'credit_card',
@@ -86,7 +85,7 @@ const TransactionsPage = () => {
         {
             id: 3,
             type: 'expense',
-            amount: -45.20,
+            amount: 45.20,
             description: 'Gas Station',
             category: 'transport',
             paymentMethod: 'debit_card',
@@ -100,7 +99,7 @@ const TransactionsPage = () => {
         {
             id: 4,
             type: 'expense',
-            amount: -1200.00,
+            amount: 1200.00,
             description: 'Monthly Rent',
             category: 'housing',
             paymentMethod: 'bank_transfer',
@@ -114,7 +113,7 @@ const TransactionsPage = () => {
         {
             id: 5,
             type: 'expense',
-            amount: -15.99,
+            amount: 15.99,
             description: 'Netflix Subscription',
             category: 'entertainment',
             paymentMethod: 'credit_card',
@@ -142,7 +141,7 @@ const TransactionsPage = () => {
         {
             id: 7,
             type: 'expense',
-            amount: -89.99,
+            amount: 89.99,
             description: 'Electric Bill',
             category: 'utilities',
             paymentMethod: 'bank_transfer',
@@ -156,7 +155,7 @@ const TransactionsPage = () => {
         {
             id: 8,
             type: 'expense',
-            amount: -25.50,
+            amount: 25.50,
             description: 'Coffee Shop',
             category: 'food',
             paymentMethod: 'cash',
@@ -170,7 +169,7 @@ const TransactionsPage = () => {
         {
             id: 9,
             type: 'expense',
-            amount: -120.00,
+            amount: 120.00,
             description: 'Doctor Visit',
             category: 'health',
             paymentMethod: 'debit_card',
@@ -199,7 +198,7 @@ const TransactionsPage = () => {
         {
             id: 11,
             type: 'expense',
-            amount: -67.80,
+            amount: 67.80,
             description: 'Restaurant Dinner',
             category: 'food',
             paymentMethod: 'credit_card',
@@ -213,7 +212,7 @@ const TransactionsPage = () => {
         {
             id: 12,
             type: 'expense',
-            amount: -35.00,
+            amount: 35.00,
             description: 'Uber Ride',
             category: 'transport',
             paymentMethod: 'credit_card',
@@ -225,6 +224,23 @@ const TransactionsPage = () => {
             color: 'blue'
         }
     ]);
+
+    const initialNewTransaction = {
+        id: 0,
+        type: 'income',
+        amount: 0,
+        description: '',
+        category: 'food',
+        paymentMethod: 'credit_card',
+        account: '',
+        date: '',
+        time: '',
+        merchant: '',
+        icon: ShoppingCart,
+        color: ''
+    }
+    const [newTransaction, setNewTransaction] = useState(initialNewTransaction);
+    // Sample transactions data
 
     const categoryOptions = [
         { value: 'all', label: 'All Categories' },
@@ -291,7 +307,7 @@ const TransactionsPage = () => {
             if (selectedDateRange !== 'all') {
                 const transactionDate = new Date(transaction.date);
                 const today = new Date();
-                
+
                 switch (selectedDateRange) {
                     case 'today':
                         return transactionDate.toDateString() === today.toDateString();
@@ -299,8 +315,8 @@ const TransactionsPage = () => {
                         const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
                         return transactionDate >= weekAgo;
                     case 'month':
-                        return transactionDate.getMonth() === today.getMonth() && 
-                               transactionDate.getFullYear() === today.getFullYear();
+                        return transactionDate.getMonth() === today.getMonth() &&
+                            transactionDate.getFullYear() === today.getFullYear();
                     default:
                         return true;
                 }
@@ -321,7 +337,7 @@ const TransactionsPage = () => {
     const totalIncome = filteredTransactions
         .filter(t => t.type === 'income')
         .reduce((sum, t) => sum + t.amount, 0);
-    
+
     const totalExpenses = Math.abs(filteredTransactions
         .filter(t => t.type === 'expense')
         .reduce((sum, t) => sum + t.amount, 0));
@@ -330,8 +346,8 @@ const TransactionsPage = () => {
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', { 
-            month: 'short', 
+        return date.toLocaleDateString('en-US', {
+            month: 'short',
             day: 'numeric'
         });
     };
@@ -348,6 +364,30 @@ const TransactionsPage = () => {
         setSelectedType('all');
         setCurrentPage(1);
     };
+
+    const handleAddTransaction = async () => {
+        console.log(newTransaction);
+        const newID = transactions.length + 1;
+        if (newTransaction.description && newTransaction.amount && newTransaction.category && newTransaction.paymentMethod && newTransaction.date) {
+            setTransactions(prev => [...prev, {
+                id: newID,
+                type: newTransaction.type,
+                amount: newTransaction.amount,
+                description: newTransaction.description,
+                category: newTransaction.category,
+                paymentMethod: newTransaction.paymentMethod,
+                account: newTransaction.account,
+                date: newTransaction.date,
+                time: '',
+                merchant: newTransaction.merchant,
+                icon: ShoppingCart,
+                color: 'emerald'
+            }]);
+            console.log(transactions);
+            setNewTransaction(initialNewTransaction);
+            setShowAddTransaction(false);
+        }
+    }
 
     const headerActions = (
         <div className="flex items-center gap-2">
@@ -368,7 +408,7 @@ const TransactionsPage = () => {
             >
                 Export
             </Button>
-            <Button 
+            <Button
                 onClick={() => setShowAddTransaction(true)}
                 icon={Plus}
             >
@@ -431,9 +471,8 @@ const TransactionsPage = () => {
                         {/* Search Bar */}
                         <div className="flex items-center gap-4 mb-4">
                             <div className="relative flex-1">
-                                <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${
-                                    darkMode ? 'text-gray-400' : 'text-gray-500'
-                                }`} size={20} />
+                                <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${darkMode ? 'text-gray-400' : 'text-gray-500'
+                                    }`} size={20} />
                                 <Input
                                     type="text"
                                     placeholder="Search transactions, merchants, or descriptions..."
@@ -443,18 +482,18 @@ const TransactionsPage = () => {
                                     darkMode={darkMode}
                                 />
                             </div>
-                            {(searchQuery || selectedCategory !== 'all' || selectedPaymentMethod !== 'all' || 
-                              selectedType !== 'all' || selectedDateRange !== 'all') && (
-                                <Button
-                                    onClick={clearFilters}
-                                    variant="ghost"
-                                    icon={X}
-                                    size="sm"
-                                    darkMode={darkMode}
-                                >
-                                    Clear
-                                </Button>
-                            )}
+                            {(searchQuery || selectedCategory !== 'all' || selectedPaymentMethod !== 'all' ||
+                                selectedType !== 'all' || selectedDateRange !== 'all') && (
+                                    <Button
+                                        onClick={clearFilters}
+                                        variant="ghost"
+                                        icon={X}
+                                        size="sm"
+                                        darkMode={darkMode}
+                                    >
+                                        Clear
+                                    </Button>
+                                )}
                         </div>
 
                         {/* Filter Bar */}
@@ -490,9 +529,8 @@ const TransactionsPage = () => {
                 </Card>
 
                 {/* Results Summary */}
-                <div className={`mb-4 flex items-center justify-between text-sm ${
-                    darkMode ? 'text-gray-400' : 'text-gray-600'
-                }`}>
+                <div className={`mb-4 flex items-center justify-between text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'
+                    }`}>
                     <span>
                         Showing {paginatedTransactions.length} of {filteredTransactions.length} transactions
                     </span>
@@ -502,6 +540,7 @@ const TransactionsPage = () => {
                 </div>
 
                 {/* Transactions List */}
+
                 <Card darkMode={darkMode} className="mb-6">
                     <div className="divide-y divide-gray-200 dark:divide-gray-700">
                         {paginatedTransactions.map((transaction, index) => {
@@ -509,11 +548,9 @@ const TransactionsPage = () => {
                             return (
                                 <div
                                     key={transaction.id}
-                                    className={`p-6 ${darkMode ? 'hover:bg-gray-700': 'hover:bg-gray-100'} transition-colors duration-200 ${
-                                        index === 0 ? 'rounded-t-2xl' : ''
-                                    } ${
-                                        index === paginatedTransactions.length - 1 ? 'rounded-b-2xl' : ''
-                                    }`}
+                                    className={`p-6 ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors duration-200 ${index === 0 ? 'rounded-t-2xl' : ''
+                                        } ${index === paginatedTransactions.length - 1 ? 'rounded-b-2xl' : ''
+                                        }`}
                                 >
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-4">
@@ -525,14 +562,12 @@ const TransactionsPage = () => {
                                             {/* Transaction Details */}
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center gap-2 mb-1">
-                                                    <h3 className={`font-semibold text-base ${
-                                                        darkMode ? 'text-white' : 'text-gray-900'
-                                                    }`}>
+                                                    <h3 className={`font-semibold text-base ${darkMode ? 'text-white' : 'text-gray-900'
+                                                        }`}>
                                                         {transaction.description}
                                                     </h3>
-                                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                                        darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'
-                                                    }`}>
+                                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'
+                                                        }`}>
                                                         {categoryOptions.find(c => c.value === transaction.category)?.label || transaction.category}
                                                     </span>
                                                 </div>
@@ -549,15 +584,13 @@ const TransactionsPage = () => {
 
                                         {/* Amount */}
                                         <div className="text-right">
-                                            <div className={`text-xl font-bold ${
-                                                transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
-                                            }`}>
-                                                {transaction.type === 'income' ? '+' : ''}
+                                            <div className={`text-xl font-bold ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
+                                                }`}>
+                                                {transaction.type === 'income' ? '+' : '-'}
                                                 {formatCurrency(transaction.amount, privateMode)}
                                             </div>
-                                            <div className={`flex items-center gap-1 text-xs mt-1 ${
-                                                darkMode ? 'text-gray-500' : 'text-gray-500'
-                                            }`}>
+                                            <div className={`flex items-center gap-1 text-xs mt-1 ${darkMode ? 'text-gray-500' : 'text-gray-500'
+                                                }`}>
                                                 {transaction.type === 'income' ? (
                                                     <ArrowUpRight className="text-green-500" size={12} />
                                                 ) : (
@@ -656,7 +689,8 @@ const TransactionsPage = () => {
                         >
                             Cancel
                         </Button>,
-                        <Button key="add">
+                        <Button key="add"
+                            onClick={handleAddTransaction}>
                             Add Transaction
                         </Button>
                     ]}
@@ -665,6 +699,7 @@ const TransactionsPage = () => {
                         <Input
                             type="text"
                             placeholder="Transaction Description"
+                            onChange={(e) => setNewTransaction(prev => ({ ...prev, description: e.target.value }))}
                             darkMode={darkMode}
                         />
                         <div className="grid grid-cols-2 gap-4">
@@ -672,25 +707,30 @@ const TransactionsPage = () => {
                                 type="number"
                                 placeholder="Amount"
                                 step="0.01"
+                                onChange={(e) => setNewTransaction(prev => ({ ...prev, amount: e.target.value }))}
                                 darkMode={darkMode}
                             />
                             <Select
                                 options={typeOptions.slice(1)}
+                                onChange={(e) => setNewTransaction(prev => ({ ...prev, type: e.target.value }))}
                                 darkMode={darkMode}
                             />
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <Select
                                 options={categoryOptions.slice(1)}
+                                onChange={(e) => setNewTransaction(prev => ({ ...prev, category: e.target.value }))}
                                 darkMode={darkMode}
                             />
                             <Select
                                 options={paymentMethodOptions.slice(1)}
+                                onChange={(e) => setNewTransaction(prev => ({ ...prev, paymentMethod: e.target.value }))}
                                 darkMode={darkMode}
                             />
                         </div>
                         <Input
                             type="date"
+                            onChange={(e) => setNewTransaction(prev => ({ ...prev, date: e.target.value }))}
                             darkMode={darkMode}
                         />
                     </div>
