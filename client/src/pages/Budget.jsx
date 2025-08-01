@@ -149,7 +149,7 @@ const BudgetPage = () => {
     const handleAddBudget = async () => {
         if (newBudget.name && newBudget.limit) {
             const icons = { 
-                food: ShoppingCart, 
+                food: ShoppingCart,
                 transport: Car, 
                 housing: Home, 
                 entertainment: Coffee, 
