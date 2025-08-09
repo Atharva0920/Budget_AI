@@ -16,7 +16,7 @@ A simple and intuitive web application to track your daily expenses, income, and
 ## 🛠️ Tech Stack
 
 - **Frontend:** React.js + TailwindCSS  
-- **Backend:** Node.js + Express  
+- **Backend:** Spring  
 - **Database:** MongoDB  
 - **Authentication:** JSON Web Tokens (JWT)  
 
