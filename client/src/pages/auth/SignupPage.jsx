@@ -3,7 +3,7 @@ import { ArrowRight, Lock, Mail, TrendingUp, Clock, PieChart, Shield, Eye, EyeOf
 import { href } from 'react-router-dom';
 import LeftSideInfo from './components/LeftSideInfo';
 import SocialLogin from './components/SocialLogin';
-
+import axios from 'axios';
 
 export default function SignUpPage() {
     const [showPassword, setShowPassword] = useState(false);
@@ -23,14 +23,24 @@ export default function SignUpPage() {
         }));
     };
 
-    const handleSubmit = (e) => {
-        setIsLoading(true);
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setTimeout(() => {
-            setIsLoading(false);
-            console.log('Form submitted:', formData);
-        }, 2000);
+        setIsLoading(true);
 
+        try {
+            await axios.post("http://localhost:8080/register", {
+                username: formData.email,
+                email: formData.email,
+                password: formData.password
+            });
+
+            window.location.href = "/login";
+        } catch (error) {
+            console.error(error);
+            alert("Registration failed");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
