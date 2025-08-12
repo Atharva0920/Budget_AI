@@ -8,12 +8,38 @@ import axios from 'axios';
 export default function SignUpPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [errors, setErrors] = useState({});
 
     const [formData, setFormData] = useState({
         email: '',
         password: '',
         rememberMe: false
     });
+
+    const validate = () => {
+    let newErrors = {};
+
+    // Email validation
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email";
+    }
+
+    // Password validation
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    } else if (!/[A-Z]/.test(formData.password)) {
+      newErrors.password = "Password must contain at least one uppercase letter";
+    } else if (!/[0-9]/.test(formData.password)) {
+      newErrors.password = "Password must contain at least one number";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -25,14 +51,18 @@ export default function SignUpPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!validate()) return;
         setIsLoading(true);
 
         try {
-            await axios.post("http://localhost:8080/register", {
+            const response = await axios.post("http://localhost:8080/api/auth/register", {
                 username: formData.email,
                 email: formData.email,
                 password: formData.password
             });
+            if (response.status === 201) {
+                alert("Registration successful! Please log in.");
+            }
 
             window.location.href = "/login";
         } catch (error) {
@@ -66,7 +96,8 @@ export default function SignUpPage() {
                         </div>
 
                         {/* Form */}
-                        <div className="space-y-6">
+                        <form className="space-y-6" onSubmit={handleSubmit}>
+                            {/* Email */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Email address
@@ -81,15 +112,16 @@ export default function SignUpPage() {
                                         value={formData.email}
                                         onChange={handleInputChange}
                                         placeholder="Enter your email"
-                                        className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white"
-                                        required
+                                        className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 transition-all duration-200 bg-gray-50 hover:bg-white 
+              ${errors.email ? "border-red-500 focus:ring-red-500" : "border-gray-200 focus:ring-emerald-500"}`}
                                     />
-                                    <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-
-                                    </div>
                                 </div>
+                                {errors.email && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                                )}
                             </div>
 
+                            {/* Password */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Password
@@ -103,20 +135,28 @@ export default function SignUpPage() {
                                         name="password"
                                         value={formData.password}
                                         onChange={handleInputChange}
-                                        className="w-full pl-12 pr-12 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white"
                                         placeholder="Enter your password"
-                                        required
+                                        className={`w-full pl-12 pr-12 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 transition-all duration-200 bg-gray-50 hover:bg-white
+              ${errors.password ? "border-red-500 focus:ring-red-500" : "border-gray-200 focus:ring-emerald-500"}`}
                                     />
                                     <button
                                         type="button"
                                         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                                         onClick={() => setShowPassword(!showPassword)}
                                     >
-                                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                        {showPassword ? (
+                                            <EyeOff className="w-5 h-5" />
+                                        ) : (
+                                            <Eye className="w-5 h-5" />
+                                        )}
                                     </button>
                                 </div>
+                                {errors.password && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                                )}
                             </div>
 
+                            {/* Remember me + Forgot */}
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center">
                                     <input
@@ -138,10 +178,13 @@ export default function SignUpPage() {
                                 </button>
                             </div>
 
+                            {/* Submit button */}
                             <button
-                                onClick={handleSubmit}
+                                type="submit"
                                 disabled={isLoading}
-                                className={`w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-2 ${isLoading ? 'opacity-75 cursor-not-allowed' : 'hover:from-emerald-600 hover:to-teal-700'
+                                className={`w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-2 ${isLoading
+                                    ? "opacity-75 cursor-not-allowed"
+                                    : "hover:from-emerald-600 hover:to-teal-700"
                                     }`}
                             >
                                 {isLoading ? (
@@ -156,7 +199,7 @@ export default function SignUpPage() {
                                     </>
                                 )}
                             </button>
-                        </div>
+                        </form>
                         <div className="text-center mt-6">
                             <p className="text-gray-600">
                                 Already have an account?{' '}
