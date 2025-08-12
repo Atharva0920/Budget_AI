@@ -1,16 +1,29 @@
 package com.aganmote.budget_backend.controller;
 
-import com.aganmote.budget_backend.dto.*;
-import com.aganmote.budget_backend.service.AuthService;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.aganmote.budget_backend.dto.LoginRequest;
+import com.aganmote.budget_backend.dto.LoginResponse;
+import com.aganmote.budget_backend.dto.RegisterRequest;
+import com.aganmote.budget_backend.service.AuthService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
+
     private final AuthService authService;
-    public AuthController(AuthService authService) { this.authService = authService; }
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest req) {
@@ -23,12 +36,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest req) {
-        try {
-            String token = authService.login(req.username, req.password);
-            return ResponseEntity.ok(new AuthResponse(token));
-        } catch (Exception e) {
-            return ResponseEntity.status(401).body("Invalid credentials");
-        }
+    public LoginResponse login(@RequestBody LoginRequest request) {
+        return authService.login(request);
     }
+
 }
