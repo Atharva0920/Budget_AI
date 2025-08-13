@@ -3,7 +3,7 @@ import { ArrowRight, Lock, Mail, TrendingUp, Clock, PieChart, Shield, Eye, EyeOf
 import { href } from 'react-router-dom';
 import LeftSideInfo from './components/LeftSideInfo';
 import SocialLogin from './components/SocialLogin';
-import axios from 'axios';
+import axiosInstance from '../../axiosInstance';
 
 export default function SignUpPage() {
     const [showPassword, setShowPassword] = useState(false);
@@ -55,7 +55,7 @@ export default function SignUpPage() {
         setIsLoading(true);
 
         try {
-            const response = await axios.post("http://localhost:8080/api/auth/register", {
+            const response = await axiosInstance.post("http://localhost:8080/api/auth/register", {
                 username: formData.email,
                 email: formData.email,
                 password: formData.password
