@@ -3,6 +3,8 @@ import { Eye, EyeOff, Mail, Lock, ArrowRight, Shield, TrendingUp, PieChart, Spar
 import LeftSideInfo from './components/LeftSideInfo';
 import SocialLogin from './components/SocialLogin';
 
+import axiosInstance from '../../axiosInstance';
+
 const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState('');
@@ -13,6 +15,22 @@ const LoginPage = () => {
     const handleSubmit = async () => {
         setIsLoading(true);
 
+        axiosInstance.post('http://localhost:8080/api/auth/login', {
+            email: email,
+            password: password,
+        })
+            .then((response) => {
+                const token = response.data.token;
+                if (token) {
+                    localStorage.setItem('token', token);
+                    window.location.href = '/dashboard';
+                }
+            }).catch((error) => {
+                console.error('Login failed:', error);
+                alert('Login failed. Please check your credentials and try again.');
+            }).finally(() => {
+                setIsLoading(false);
+            });
 
         setTimeout(() => {
             setIsLoading(false);
@@ -20,7 +38,7 @@ const LoginPage = () => {
         }, 2000);
     };
 
-    
+
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex">
@@ -33,7 +51,7 @@ const LoginPage = () => {
                             <h2 className="text-3xl font-bold text-gray-800 mb-2">Welcome Back!</h2>
                             <p className="text-gray-600">Sign in to your account to continue</p>
                         </div>
-                        <SocialLogin/>
+                        <SocialLogin />
 
                         {/* Divider */}
                         <div className="relative my-6">
