@@ -56,8 +56,8 @@ export default function SignUpPage() {
 
         try {
             const response = await axiosInstance.post("http://localhost:8080/api/auth/register", {
-                username: formData.email,
-                email: formData.email,
+                username: formData.email.toLowerCase(),
+                email: formData.email.toLowerCase(),
                 password: formData.password
             });
             if (response.status === 201) {
