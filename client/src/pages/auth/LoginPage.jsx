@@ -16,7 +16,7 @@ const LoginPage = () => {
         setIsLoading(true);
 
         axiosInstance.post('http://localhost:8080/api/auth/login', {
-            email: email,
+            email: email.toLowerCase(),
             password: password,
         })
             .then((response) => {
