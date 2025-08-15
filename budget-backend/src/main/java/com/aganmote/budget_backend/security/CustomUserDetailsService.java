@@ -18,6 +18,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        username = username.toLowerCase(); 
         com.aganmote.budget_backend.model.User appUser = repo.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("user not found"));
 
