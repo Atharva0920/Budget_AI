@@ -15,7 +15,7 @@ const LoginPage = () => {
     const handleSubmit = async () => {
         setIsLoading(true);
 
-        axiosInstance.post('http://localhost:8080/api/auth/login', {
+        axiosInstance.post("/api/auth/login", {
             email: email.toLowerCase(),
             password: password,
         })
