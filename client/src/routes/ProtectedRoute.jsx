@@ -1,27 +1,30 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../axiosInstance";
 
 export default function ProtectedRoute({ children }) {
-  const [isValid, setIsValid] = useState(null);
+  const [isValid, setIsValid] = useState(null); // null = loading
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const validateToken = async () => {
+      try {
+        await axiosInstance.get("/api/auth/validate"); 
+        setIsValid(true);
+      } catch (error) {
+        setIsValid(false);
+      }
+    };
 
-    if (!token) {
-      setIsValid(false);
-      return;
-    }
-
-    axios.get("http://localhost:8080/api/auth/validate", {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-    .then(() => setIsValid(true))
-    .catch(() => setIsValid(false));
+    validateToken();
   }, []);
 
-  if (isValid === null) return <div>Loading...</div>;
-  if (!isValid) return <Navigate to="/login" replace />;
+  if (isValid === null) {
+    return <p>Loading...</p>; // Or a spinner
+  }
+
+  if (!isValid) {
+    return <Navigate to="/login" replace />;
+  }
 
   return children;
 }
