@@ -1,36 +1,49 @@
-# 💰 Personal Finance Tracker
+# 💰 Budget AI - Personal Finance Tracker
 
-A simple and intuitive web application to track your daily expenses, income, and savings goals. This side project is designed to help users take control of their personal finances by categorizing transactions, setting budgets, and monitoring spending trends.
+A simple and intuitive web application to track your daily expenses, income, and savings goals.  
+This side project is designed to help users take control of their personal finances by categorizing transactions, setting budgets, and monitoring spending trends.
+
+---
 
 ## 🚀 Features
 
-- 📊 Dashboard overview of your financial health
-- 💸 Track income and expenses by category
-- 🏷️ Create custom categories and tags
-- 📅 Filter transactions by date range
-- 🎯 Set and monitor monthly budgets
-- 🔐 User authentication (JWT-based)
-- 🌙 Dark mode support
-- 📱 Mobile-friendly responsive design
+- 📊 **Dashboard** – Overview of your financial health  
+- 💸 **Transactions** – Track income and expenses by category  
+- 🏷️ **Custom Categories** – Create and manage your own tags  
+- 📅 **Filtering** – View transactions by date range  
+- 🎯 **Budgets** – Set and monitor monthly spending goals  
+- 🔐 **Authentication** – Secure JWT-based user login & registration  
+- 🌙 **Dark Mode** – Persistent dark/light theme toggle  
+- 📱 **Responsive Design** – Works seamlessly on desktop & mobile  
+
+---
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** React.js + TailwindCSS  
-- **Backend:** Spring  
-- **Database:** MongoDB  
-- **Authentication:** JSON Web Tokens (JWT)  
+### Frontend
+- **React.js** – UI development  
+- **Tailwind CSS** – Styling and responsive design  
+- **Lucide Icons** – Iconography  
 
+### Backend
+- **Spring Boot** – RESTful API services  
+- **MongoDB** – NoSQL database for transactions, categories & users  
+- **Spring Security + JWT** – Authentication & authorization  
 
-## 🧪 Installation
+---
+
+## 📂 Project Structure
 
 ```bash
-# Clone the repository
-git clone https://github.com/Atharva0920/Budget-AI.git
-cd budget-ai
-
-# Install frontend & backend dependencies
-cd client && npm install
-cd ../server && npm install
-
-# Run frontend & backend
-npm run dev   # or run separately in client and server folders
+Budget-AI/
+│── client/             # React frontend
+│   ├── src/            # Components, hooks, pages
+│   ├── public/         # Static assets
+│   └── package.json    # Frontend dependencies
+│
+│── server/             # Spring Boot backend
+│   ├── src/            # Java code (controllers, services, models)
+│   ├── resources/      # Config files
+│   └── pom.xml         # Backend dependencies
+│
+└── README.md
