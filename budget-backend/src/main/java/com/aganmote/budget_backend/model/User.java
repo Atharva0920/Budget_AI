@@ -1,5 +1,9 @@
 package com.aganmote.budget_backend.model;
 
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,6 +19,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @CreationTimestamp
+    private LocalDateTime createdAt;
     @Column(unique = true, nullable = false)
     private String username;
 
@@ -43,6 +49,9 @@ public class User {
     public String getPassword() {
         return password;
     }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    };
 
     public void setUsername(String username) {
         this.username = username;
