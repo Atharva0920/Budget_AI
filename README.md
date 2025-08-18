@@ -47,3 +47,22 @@ Budget-AI/
 │   └── pom.xml         # Backend dependencies
 │
 └── README.md
+
+# Clone the repository
+```
+git clone https://github.com/Atharva0920/Budget-AI.git
+cd Budget-AI
+```
+# Setup frontend
+
+```
+cd client
+npm install
+npm run dev   # Runs on http://localhost:5173
+```
+
+# Setup backend
+```
+cd ../server
+./mvnw spring-boot:run   # Runs on http://localhost:8080
+```
