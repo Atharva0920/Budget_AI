@@ -66,3 +66,42 @@ npm run dev   # Runs on http://localhost:5173
 cd ../server
 ./mvnw spring-boot:run   # Runs on http://localhost:8080
 ```
+
+## 🔑 Authentication
+
+- Uses **JWT (JSON Web Token)** for secure user sessions  
+- Passwords are **hashed** before storage  
+- Token is **validated** before accessing protected routes  
+
+---
+
+## 📸 Screenshots (Coming Soon)
+
+- Dashboard view  
+- Transactions page with filters  
+- Dark mode UI  
+
+---
+
+## 📌 Roadmap
+
+- [ ] Export transactions to CSV/Excel  
+- [ ] AI-powered expense categorization  
+- [ ] Multi-user support with shared budgets  
+- [ ] Notifications for budget overspending  
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you’d like to improve.  
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License** – feel free to use and modify.  
+
+
+## 👨‍💻 Author
+Developed by Atharva Ganmote 🚀
