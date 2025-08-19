@@ -31,6 +31,7 @@ public class JwtUtil {
     }
 
     public String generateToken(String username) {
+        username = username.toLowerCase();
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expirationMs);
 
@@ -51,9 +52,22 @@ public class JwtUtil {
                 .getSubject();
     }
 
+    public void isTokenExpired(String token, String username, UserDetails userDetails) {
+        System.out.println("JWT Validation: tokenUser=" + username + ", dbUser=" + userDetails.getUsername());
+    }
+
     public boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equalsIgnoreCase(userDetails.getUsername()) && validateToken(token));
+        
+        try {
+            final String username = extractUsername(token);
+            isTokenExpired(token, secret, userDetails);
+            boolean valid = username.equalsIgnoreCase(userDetails.getUsername()) && validateToken(token);
+            System.out.println("JWT Validation: tokenUser=" + username + ", dbUser=" + userDetails.getUsername() + ", result=" + valid);
+            return valid;
+        } catch (Exception e) {
+            System.out.println("JWT validation failed: " + e.getMessage());
+            return false;
+        }
     }
 
     public boolean validateToken(String token) {
