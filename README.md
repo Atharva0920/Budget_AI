@@ -1,34 +1,36 @@
-# 💰 Budget AI - Personal Finance Tracker
+# 💰 Budget AI – Personal Finance Tracker
 
-A simple and intuitive web application to track your daily expenses, income, and savings goals.  
-This side project is designed to help users take control of their personal finances by categorizing transactions, setting budgets, and monitoring spending trends.
+A simple and intuitive web application to track your **expenses, income, and savings goals**.
+Budget AI empowers users to take control of their personal finances by categorizing transactions, setting budgets, and monitoring spending trends in an easy-to-use dashboard.
 
 ---
 
 ## 🚀 Features
 
-- 📊 **Dashboard** – Overview of your financial health  
-- 💸 **Transactions** – Track income and expenses by category  
-- 🏷️ **Custom Categories** – Create and manage your own tags  
-- 📅 **Filtering** – View transactions by date range  
-- 🎯 **Budgets** – Set and monitor monthly spending goals  
-- 🔐 **Authentication** – Secure JWT-based user login & registration  
-- 🌙 **Dark Mode** – Persistent dark/light theme toggle  
-- 📱 **Responsive Design** – Works seamlessly on desktop & mobile  
+* 📊 **Dashboard** – Overview of financial health
+* 💸 **Transactions** – Track income & expenses with categories
+* 🏷️ **Custom Categories** – Add and manage tags for transactions
+* 📅 **Filtering** – View transactions by date range
+* 🎯 **Budgets** – Set monthly spending limits & track progress
+* 🔐 **Authentication** – Secure JWT-based login & registration
+* 🌙 **Dark Mode** – Persistent theme toggle (light/dark)
+* 📱 **Responsive UI** – Optimized for desktop & mobile
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Frontend
-- **React.js** – UI development  
-- **Tailwind CSS** – Styling and responsive design  
-- **Lucide Icons** – Iconography  
+### **Frontend**
 
-### Backend
-- **Spring Boot** – RESTful API services  
-- **MongoDB** – NoSQL database for transactions, categories & users  
-- **Spring Security + JWT** – Authentication & authorization  
+* ⚛️ React.js – Component-based UI development
+* 🎨 Tailwind CSS – Utility-first styling & responsive design
+* 🖼️ Lucide Icons – Lightweight icon library
+
+### **Backend**
+
+* ☕ Spring Boot – RESTful API services
+* 🗄️ MongoDB – NoSQL database for users, categories & transactions
+* 🔐 Spring Security + JWT – Authentication & authorization
 
 ---
 
@@ -42,18 +44,25 @@ Budget-AI/
 │   └── package.json    # Frontend dependencies
 │
 │── server/             # Spring Boot backend
-│   ├── src/            # Java code (controllers, services, models)
+│   ├── src/            # Controllers, services, models
 │   ├── resources/      # Config files
 │   └── pom.xml         # Backend dependencies
 │
 └── README.md
 ```
-# Clone the repository
+
+---
+
+## ⚡ Getting Started
+
+### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/Atharva0920/Budget-AI.git
 cd Budget-AI
 ```
-# Setup frontend
+
+### 2. Setup Frontend
 
 ```bash
 cd client
@@ -61,47 +70,67 @@ npm install
 npm run dev   # Runs on http://localhost:5173
 ```
 
-# Setup backend
+### 3. Setup Backend
+
 ```bash
 cd ../server
 ./mvnw spring-boot:run   # Runs on http://localhost:8080
 ```
 
+---
+
 ## 🔑 Authentication
 
-- Uses **JWT (JSON Web Token)** for secure user sessions  
-- Passwords are **hashed** before storage  
-- Token is **validated** before accessing protected routes  
+* **JWT (JSON Web Token)** for secure sessions
+* **Password hashing** for safe storage
+* **Protected routes** – API endpoints require a valid token
 
 ---
 
-## 📸 Screenshots (Coming Soon)
+## 📸 Screenshots *(Coming Soon)*
 
-- Dashboard view  
-- Transactions page with filters  
-- Dark mode UI  
+* ✅ Dashboard overview
+* ✅ Transactions page with filters
+* ✅ Dark mode UI
 
 ---
 
 ## 📌 Roadmap
 
-- [ ] Export transactions to CSV/Excel  
-- [ ] AI-powered expense categorization  
-- [ ] Multi-user support with shared budgets  
-- [ ] Notifications for budget overspending  
+* [ ] Export transactions to CSV/Excel
+* [ ] AI-powered expense categorization
+* [ ] Multi-user shared budgets
+* [ ] Notifications for budget overspending
+* [ ] Mobile app version
 
 ---
 
 ## 🤝 Contributing
 
-Pull requests are welcome! For major changes, please open an issue first to discuss what you’d like to improve.  
+Contributions are welcome! 🎉
+
+1. Fork the repository
+2. Create a new branch (`feature/awesome-feature`)
+3. Commit your changes (`git commit -m 'Add awesome feature'`)
+4. Push to the branch (`git push origin feature/awesome-feature`)
+5. Open a Pull Request
+
+---
+
+## 🧪 Testing (Planned)
+
+* ✅ Unit tests for services
+* ✅ Integration tests for APIs
+* 🚧 E2E tests for frontend
 
 ---
 
 ## 📜 License
 
-This project is licensed under the **MIT License** – feel free to use and modify.  
+Licensed under the **MIT License** – free to use & modify.
 
+---
 
 ## 👨‍💻 Author
-Developed by Atharva Ganmote 🚀
+
+Developed with ❤️ by **Atharva Ganmote** 🚀
