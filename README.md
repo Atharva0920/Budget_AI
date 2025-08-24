@@ -43,7 +43,7 @@ Budget-AI/
 │   ├── public/         # Static assets
 │   └── package.json    # Frontend dependencies
 │
-│── server/             # Spring Boot backend
+│── budget-backend/             # Spring Boot backend
 │   ├── src/            # Controllers, services, models
 │   ├── resources/      # Config files
 │   └── pom.xml         # Backend dependencies
@@ -73,7 +73,7 @@ npm run dev   # Runs on http://localhost:5173
 ### 3. Setup Backend
 
 ```bash
-cd ../server
+cd ../budget-backend
 ./mvnw spring-boot:run   # Runs on http://localhost:8080
 ```
 
