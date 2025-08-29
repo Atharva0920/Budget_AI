@@ -29,7 +29,7 @@ Budget AI empowers users to take control of their personal finances by categoriz
 ### **Backend**
 
 * ☕ Spring Boot – RESTful API services
-* 🗄️ MongoDB – NoSQL database for users, categories & transactions
+* 🗄️ PostgreASQL – SQL database for users, categories & transactions
 * 🔐 Spring Security + JWT – Authentication & authorization
 
 ---
